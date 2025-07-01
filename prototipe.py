@@ -5,6 +5,7 @@ from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
 import matplotlib.pyplot as plt
 from wordcloud import WordCloud
 from nltk import ngrams
+import pickle
 
 USERNAME = "admincs"
 PASSWORD = "adorable123"
