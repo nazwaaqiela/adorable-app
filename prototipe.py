@@ -47,11 +47,11 @@ def upload_data():
         try:
             df = pd.read_excel(uploaded_file)
         except Exception as e:
-            st.error(f"❌ Gagal membaca file Excel: {e}")
+            st.error(f"Gagal membaca file Excel: {e}")
             return
 
         if df.empty or df.columns.size == 0:
-            st.error("❌ File kosong atau tidak memiliki kolom.")
+            st.error("File kosong atau tidak memiliki kolom.")
             return
 
         # Simpan ke session_state
@@ -236,7 +236,7 @@ def analisis_sentimen():
     sentimen_counts = export_df["Sentimen"].value_counts().reindex(["Negatif", "Netral", "Positif"], fill_value=0)
     colors = {"Negatif": "red", "Netral": "gold", "Positif": "green"}
 
-    fig, ax = plt.subplots(figsize=(5, 3.5))  # ukuran lebih kecil
+    fig, ax = plt.subplots(figsize=(5, 3.5))  
     bars = ax.bar(sentimen_counts.index, sentimen_counts.values,
                   color=[colors[s] for s in sentimen_counts.index])
 
@@ -244,17 +244,17 @@ def analisis_sentimen():
         height = bar.get_height()
         ax.annotate(f'{int(height)}',
                     xy=(bar.get_x() + bar.get_width() / 2, height),
-                    xytext=(0, 3),  
+                    xytext=(0, 3),
                     textcoords="offset points",
-                    ha='center', va='bottom', fontsize=10)
+                    ha='center', va='bottom',
+                    fontsize=7)  # 👉 ukuran angka di atas bar
 
-    ax.set_title("Jumlah Ulasan per Sentimen")
-    ax.set_xlabel("Sentimen")
-    ax.set_ylabel("Jumlah")
-    ax.tick_params(axis='x', rotation=0)
-    st.pyplot(fig)
-
-    st.subheader("Ulasan Berdasarkan Sentimen")
+    ax.set_title("Jumlah Ulasan per Sentimen", fontsize=10)
+    ax.set_xlabel("Sentimen", fontsize=9)
+    ax.set_ylabel("Jumlah", fontsize=9)
+    ax.tick_params(axis='x', labelsize=9)
+    ax.tick_params(axis='y', labelsize=8)
+        st.subheader("Ulasan Berdasarkan Sentimen")
 
     tab_neg, tab_net, tab_pos = st.tabs(["**Negatif**", "**Netral**", "**Positif**"])
 
