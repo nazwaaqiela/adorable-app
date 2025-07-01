@@ -181,29 +181,6 @@ def exploratory_data_analysis():
     ax.set_ylabel("Frequency")
     ax.tick_params(axis='x', rotation=45)
     st.pyplot(fig)
-    
-    # Fungsi untuk plot histogram n-gram
-    def plot_top_ngrams(corpus, ngram_range=(1, 1), top_n=20, title="Top N-gram"):
-        vec = CountVectorizer(ngram_range=ngram_range)
-        bag = vec.fit_transform(corpus)
-        sum_words = bag.sum(axis=0)
-
-        word_freq = [(word, sum_words[0, idx]) for word, idx in vec.vocabulary_.items()]
-        word_freq = sorted(word_freq, key=lambda x: x[1], reverse=True)[:top_n]
-        ngram_df = pd.DataFrame(word_freq, columns=["N-gram", "Frequency"])
-
-        st.subheader(title)
-        fig, ax = plt.subplots(figsize=(10, 6))
-        ngram_df.set_index("N-gram")["Frequency"].plot(kind="bar", color="skyblue", ax=ax)
-        ax.set_title(title)
-        ax.set_xlabel("N-gram")
-        ax.set_ylabel("Frequency")
-        ax.tick_params(axis='x', rotation=45)
-        st.pyplot(fig)
-
-# Tampilkan keduanya
-plot_top_ngrams(df["Ulasan_String"], ngram_range=(1, 1), top_n=20, title="Top 20 Most Frequent Words (Unigram)")
-plot_top_ngrams(df["Ulasan_String"], ngram_range=(2, 3), top_n=20, title="Top 20 Most Frequent Bigrams and Trigrams")
 
 def analisis_sentimen():
     st.header("Analisis Sentimen")
