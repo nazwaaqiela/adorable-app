@@ -214,7 +214,7 @@ def exploratory_data_analysis():
 
     # Buat dan tampilkan WordCloud
     wc = WordCloud(width=800, height=400, background_color='white').generate(text)
-
+    st.write("Contoh bigram:", all_bigrams[:10])
     st.subheader("WordCloud Bigram dari Ulasan")
     fig, ax = plt.subplots(figsize=(15, 7))
     ax.imshow(wc, interpolation='bilinear')
