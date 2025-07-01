@@ -7,6 +7,10 @@ from wordcloud import WordCloud
 from nltk import ngrams
 import pickle
 import io
+import ast
+from gensim.models import Phrases, CoherenceModel
+from gensim.models.phrases import Phraser
+from gensim import corpora, models
 
 USERNAME = "admincs"
 PASSWORD = "adorable123"
@@ -246,13 +250,13 @@ def analisis_sentimen():
                     xy=(bar.get_x() + bar.get_width() / 2, height),
                     xytext=(0, 3),
                     textcoords="offset points",
-                    ha='center', va='bottom', fontsize=4)  
+                    ha='center', va='bottom', fontsize=8)  
 
-    ax.set_title("Jumlah Ulasan per Sentimen", fontsize=5)
-    ax.set_xlabel("Sentimen", fontsize=4)
-    ax.set_ylabel("Jumlah", fontsize=4)
-    ax.tick_params(axis='x', labelsize=4)
-    ax.tick_params(axis='y', labelsize=4)
+    ax.set_title("Jumlah Ulasan per Sentimen", fontsize=8)
+    ax.set_xlabel("Sentimen", fontsize=7)
+    ax.set_ylabel("Jumlah", fontsize=7)
+    ax.tick_params(axis='x', labelsize=7)
+    ax.tick_params(axis='y', labelsize=7)
 
     st.pyplot(fig)
     
@@ -326,8 +330,78 @@ def analisis_sentimen():
     st.session_state.df = df
 
 def analisis_topik():
-    st.header("Analisis Topik")
-    st.write("Halaman untuk analisis topik.")
+    st.header("Analisis Topik Ulasan")
+  
+    if "df" not in st.session_state or "Ulasan_Tokenized" not in st.session_state.df.columns or "Prediksi_Sentimen" not in st.session_state.df.columns:
+        st.warning("⚠ Silakan unggah dan bersihkan data terlebih dahulu.")
+    else:
+        df = st.session_state.df.copy()
+
+        # Ubah string jadi list jika perlu
+        df["Ulasan_Tokenized"] = df["Ulasan_Tokenized"].apply(lambda x: ast.literal_eval(x) if isinstance(x, str) else x)
+
+        # Buat bigram dan trigram
+        bigram_model = Phrases(df["Ulasan_Tokenized"], min_count=2)
+        bigram_phraser = Phraser(bigram_model)
+        df["Bigrams"] = df["Ulasan_Tokenized"].apply(lambda x: bigram_phraser[x])
+
+        trigram_model = Phrases(df["Bigrams"], min_count=1, threshold=2)
+        trigram_phraser = Phraser(trigram_model)
+        df["Trigrams"] = df["Bigrams"].apply(lambda x: trigram_phraser[x])
+
+        # Label sentimen
+        sentimen_label = {
+            "Negatif": 0,
+            "Netral": 1,
+            "Positif": 2
+        }
+
+        tabs = st.tabs(list(sentimen_label.keys()))
+
+        for i, (label_nama, label_kode) in enumerate(sentimen_label.items()):
+            with tabs[i]:
+                st.subheader(f"Topik untuk Sentimen {label_nama}")
+                data_terpilih = df[df["Prediksi_Sentimen"] == label_kode]
+
+                if data_terpilih.empty:
+                    st.info("Tidak ada data untuk sentimen ini.")
+                    continue
+
+                dictionary = corpora.Dictionary(data_terpilih["Trigrams"])
+                corpus = [dictionary.doc2bow(text) for text in data_terpilih["Trigrams"]]
+
+                def cari_model_terbaik(dictionary, corpus, texts, start=2, limit=15, step=1):
+                    best_model = None
+                    best_score = -1
+                    best_num_topics = 0
+
+                    for num_topics in range(start, limit + 1, step):
+                        model = models.LdaModel(
+                            corpus=corpus,
+                            id2word=dictionary,
+                            num_topics=num_topics,
+                            random_state=42,
+                            passes=10,
+                            alpha="auto"
+                        )
+                        coherence_model = CoherenceModel(model=model, texts=texts, dictionary=dictionary, coherence='c_v')
+                        score = coherence_model.get_coherence()
+
+                        if score > best_score:
+                            best_score = score
+                            best_model = model
+                            best_num_topics = num_topics
+
+                    return best_model, best_num_topics, best_score
+
+                with st.spinner("Mencari topik terbaik..."):
+                    lda_model, best_num_topics, best_score = cari_model_terbaik(dictionary, corpus, data_terpilih["Trigrams"])
+
+                # Tampilkan hasil topik bersih (list kata)
+                topics = lda_model.print_topics(num_topics=best_num_topics, num_words=10)
+                for idx, topic in topics:
+                    top_words = ", ".join([term.split("*")[1].strip().strip('"') for term in topic.split(" + ")])
+                    st.markdown(f"- {top_words}")
 
 def main():
     if "logged_in" not in st.session_state:
