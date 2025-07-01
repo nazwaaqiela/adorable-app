@@ -7,5 +7,4 @@ wordcloud
 nltk
 scikit-learn
 xlsxwriter
-Phrases
-CoherenceModel
+gensim
