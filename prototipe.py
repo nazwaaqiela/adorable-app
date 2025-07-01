@@ -3,6 +3,8 @@ import pandas as pd
 import re
 from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
 import matplotlib.pyplot as plt
+from wordcloud import WordCloud
+from nltk import ngrams
 
 USERNAME = "admincs"
 PASSWORD = "adorable123"
@@ -179,6 +181,43 @@ def exploratory_data_analysis():
     ax.set_ylabel("Frequency")
     ax.tick_params(axis='x', rotation=45)
     st.pyplot(fig)
+
+    # Fungsi untuk generate n-gram
+    def generate_ngrams(text_series, n=2):
+        words = ' '.join(text_series).split()
+        n_grams = ngrams(words, n)
+        return [' '.join(gram) for gram in n_grams]
+
+    # Generate bigram & trigram
+    bigrams = generate_ngrams(df["Ulasan_String"], n=2)
+    trigrams = generate_ngrams(df["Ulasan_String"], n=3)
+
+    # Gabungkan menjadi teks
+    bigram_text = ' '.join(bigrams)
+    trigram_text = ' '.join(trigrams)
+
+    # Buat WordCloud
+    def create_wordcloud(text, title):
+        wordcloud = WordCloud(width=800, 
+                             height=400,
+                             background_color='white',
+                             colormap='viridis',
+                             max_words=100).generate(text)
+    
+        plt.figure(figsize=(10, 5))
+        plt.imshow(wordcloud, interpolation='bilinear')
+        plt.title(title, fontsize=15)
+        plt.axis('off')
+        return plt
+
+    # Tampilkan di Streamlit
+    st.subheader("WordCloud Bigram (2 Kata)")
+    bigram_plot = create_wordcloud(bigram_text, "Bigram WordCloud")
+    st.pyplot(bigram_plot)
+
+    st.subheader("WordCloud Trigram (3 Kata)")
+    trigram_plot = create_wordcloud(trigram_text, "Trigram WordCloud")
+    st.pyplot(trigram_plot)
 
 def analisis_sentimen():
     st.header("Analisis Sentimen")
