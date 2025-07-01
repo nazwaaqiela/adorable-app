@@ -5,3 +5,4 @@ Sastrawi
 openpyxl
 wordcloud 
 nltk
+scikit-learn
