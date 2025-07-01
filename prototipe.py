@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 from wordcloud import WordCloud
 from nltk import ngrams
 import pickle
+import io
 
 USERNAME = "admincs"
 PASSWORD = "adorable123"
@@ -275,9 +276,30 @@ def analisis_sentimen():
             ax.set_title("WordCloud Sentimen Positif", fontsize=18)
             st.pyplot(fig)
 
-    # Tombol unduh hasil
-    csv = df.to_csv(index=False).encode("utf-8")
-    st.download_button("📥 Unduh Hasil Sentimen (.csv)", csv, file_name="hasil_sentimen.csv", mime="text/csv")
+    label_map = {
+        0: "Negatif",
+        1: "Netral",
+        2: "Positif"
+    }
+
+    export_df = df.copy()
+    export_df["Sentimen"] = export_df["Prediksi_Sentimen"].map(label_map)
+
+    kolom_terpilih = ["No", "Tanggal", "Produk", "Ulasan", "Ulasan_Tokenized", "Sentimen"]
+    export_df = export_df[kolom_terpilih]
+
+    output = io.BytesIO()
+    with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+        export_df.to_excel(writer, index=False, sheet_name="Hasil Sentimen")
+        writer.save()
+        xlsx_data = output.getvalue()
+
+    st.download_button(
+        label="📥 Unduh Hasil Sentimen (Excel)",
+        data=xlsx_data,
+        file_name="hasil_sentimen.xlsx",
+        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
 
     # Simpan kembali ke session_state
     st.session_state.df = df
