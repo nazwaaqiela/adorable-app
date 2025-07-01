@@ -8,26 +8,26 @@ USERNAME = "admincs"
 PASSWORD = "adorable123"
 
 def login():
-    st.title("🔐 Login Page")
+    st.title("Halaman Login")
     username = st.text_input("Username")
     password = st.text_input("Password", type="password")
     if st.button("Login"):
         if username == USERNAME and password == PASSWORD:
             st.session_state.logged_in = True
-            st.success("Login successful! ✅")
+            st.success("Berhasil masuk!")
             st.rerun()
         else:
             st.error("Username atau Password salah!")
 
 def home():
-    st.header("🏠 Home")
-    st.write("Selamat datang di aplikasi analisis!")
+    st.header("Halaman Utama")
+    st.write("Selamat datang di aplikasi analisis data ulasan!")
       # Penjelasan tentang aplikasi
     st.write("""
     Aplikasi ini dapat melakukan analisis data secara interaktif dan visual. Berikut adalah panduan singkat untuk memulai:
 
-    1. Unggah dataset dengan memilih opsi 'Upload Data' di menu.
-    2. Pilih 'Exploratory Data Analysis' untuk melihat gambaran umum dari data melalui grafik dan statistik deskriptif.
+    1. Unggah dataset dengan memilih opsi 'Unggah Data' di menu.
+    2. Pilih 'Analisis Data Eksploratori' untuk melihat gambaran umum dari data melalui grafik dan statistik deskriptif.
     3. Pilih 'Analisis Sentimen' untuk menganalisis teks dalam dataset dan melihat sentimen yang terkandung di dalamnya.
     4. Pilih 'Analisis Topik' untuk mengidentifikasi topik-topik utama yang terkandung dalam dataset.
     5. Setelah analisis selesai, hasil analisis dalam bentuk grafik atau tabel dapat diunduh.
@@ -35,9 +35,9 @@ def home():
 
 
 def upload_data():
-    st.header("📤 Upload Data Excel")
+    st.header("Unggah Data")
 
-    uploaded_file = st.file_uploader("Upload file Excel", type="xlsx")
+    uploaded_file = st.file_uploader("Unggah file Excel", type="xlsx")
 
     if uploaded_file:
         try:
@@ -53,41 +53,41 @@ def upload_data():
         # Simpan ke session_state
         st.session_state.df = df
 
-        st.success("✅ Data berhasil diupload!")
+        st.success("Data berhasil diunggah!")
 
     # Informasi dataset
     st.subheader("📈 Informasi Dataset")
-    st.write(f"🔢 Jumlah baris: {df.shape[0]}")
-    st.write(f"🔢 Jumlah kolom: {df.shape[1]}")
+    st.write(f"Jumlah baris: {df.shape[0]}")
+    st.write(f"Jumlah kolom: {df.shape[1]}")
 
     # Cek missing values
     missing = df.isnull().sum()
     missing_cols = missing[missing > 0]
     if not missing_cols.empty:
-        st.write("❗ Missing values per kolom:")
+        st.write("Missing values per kolom:")
         st.dataframe(missing_cols)
     else:
-        st.write("✅ Tidak ada missing values.")
+        st.write("Tidak ada missing values.")
 
     # Cek duplikat data
     dup_count = df.duplicated().sum()
     if dup_count > 0:
-        st.write(f"📌 Jumlah baris duplikat (semua kolom sama persis): {dup_count}")
+        st.write(f"Jumlah baris duplikat: {dup_count}")
         if st.checkbox("Tampilkan baris duplikat"):
             st.dataframe(df[df.duplicated()])
     else:
-        st.write("✅ Tidak ada baris duplikat.")
+        st.write("Tidak ada baris duplikat.")
 
     # Tipe data
-    st.write("🔠 Tipe Data per Kolom:")
+    st.write("Tipe Data per Kolom:")
     st.dataframe(df.dtypes.astype(str))
 
     #  Tampilkan Dataset
-    st.write("🔍 10 Data Teratas")
+    st.write("10 Data Teratas")
     st.dataframe(df.head(10))
 
     # Upload kamus slang dan stopwords
-    st.subheader("📚 Upload Kamus Slang dan Stopwords")
+    st.subheader("Unggah Kamus Slang dan Stopwords")
 
     slang_file = st.file_uploader("Upload Kamus Slang (.xlsx)", type="xlsx", key="slang")
     stopwords_file = st.file_uploader("Upload Stopwords (.xlsx)", type="xlsx", key="stopwords")
@@ -133,12 +133,11 @@ def upload_data():
         def tokenize(text):
             return text.split()
 
-        # Kolom target
         if "Ulasan" not in df.columns:
             st.error("Kolom 'Ulasan' tidak ditemukan dalam data.")
             return
 
-        st.write("🔄 Memproses pembersihan teks...")
+        st.write("Memproses pembersihan teks...")
 
         df["Ulasan_Cleaned"] = df["Ulasan"].apply(clean_text)
         df["Ulasan_Normalized"] = df["Ulasan_Cleaned"].apply(replace_slang)
@@ -147,18 +146,18 @@ def upload_data():
         df["Ulasan_Stemmed2"] = df["Ulasan_Stemmed"].apply(remove_noise)
         df["Ulasan_Tokenized"] = df["Ulasan_Stemmed2"].apply(tokenize)
 
-        st.success("✅ Teks berhasil dibersihkan!")
+        st.success("Teks berhasil dibersihkan!")
 
         # Tampilkan hasil
-        st.subheader("🧼 Contoh Hasil Pembersihan")
+        st.subheader("Cuplikan Hasil Pembersihan")
         st.dataframe(df["Ulasan_Tokenized"].head())
 
 
 def exploratory_data_analysis():
-    st.header("📊 Exploratory Data Analysis")
+    st.header("Analisis Data Eksploratori")
 
     if "df" not in st.session_state or "Ulasan_Tokenized" not in st.session_state.df.columns:
-        st.warning("⚠️ Silakan upload dan bersihkan data terlebih dahulu.")
+        st.warning("⚠ Silakan upload dan bersihkan data terlebih dahulu.")
         return
 
     df = st.session_state.df.copy()
@@ -180,11 +179,11 @@ def exploratory_data_analysis():
     st.pyplot(fig)
 
 def analisis_sentimen():
-    st.header("💬 Analisis Sentimen")
+    st.header("Analisis Sentimen")
     st.write("Halaman untuk analisis sentimen.")
 
 def analisis_topik():
-    st.header("📚 Analisis Topik")
+    st.header("Analisis Topik")
     st.write("Halaman untuk analisis topik.")
 
 def main():
@@ -194,15 +193,15 @@ def main():
     if not st.session_state.logged_in:
         login()
     else:
-        st.sidebar.title("📂 Navigasi")
+        st.sidebar.title("Navigasi")
         page = st.sidebar.radio("Pilih Halaman", [
-            "Home", "Upload Data", "Exploratory Data Analysis",
-            "Analisis Sentimen", "Analisis Topik", "Logout"
+            "Halaman Utama", "Unggah Data", "Exploratory Data Analysis",
+            "Analisis Sentimen", "Analisis Topik", "Keluar"
         ])
 
-        if page == "Home":
+        if page == "Halaman Utama":
             home()
-        elif page == "Upload Data":
+        elif page == "Unggah Data":
             upload_data()
         elif page == "Exploratory Data Analysis":
             exploratory_data_analysis()
@@ -210,7 +209,7 @@ def main():
             analisis_sentimen()
         elif page == "Analisis Topik":
             analisis_topik()
-        elif page == "Logout":
+        elif page == "Keluar":
             st.session_state.logged_in = False
             st.success("Logout berhasil.")
             st.experimental_rerun()
