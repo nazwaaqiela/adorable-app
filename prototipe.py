@@ -226,9 +226,21 @@ def analisis_sentimen():
         st.error(f"Gagal melakukan prediksi: {e}")
         return
 
-    # Tampilkan hasil
-    st.subheader("Hasil Prediksi Sentimen")
-    st.dataframe(df[["Ulasan", "Ulasan_String", "Prediksi_Sentimen"]].head())
+    st.subheader("Ulasan Berdasarkan Sentimen")
+
+    tab_neg, tab_net, tab_pos = st.tabs(["😠 Negatif", "😐 Netral", "😊 Positif"])
+
+    with tab_neg:
+        st.write("Ulasan dengan sentimen **Negatif** (0)")
+        st.dataframe(df[df["Prediksi_Sentimen"] == 0][["Ulasan"]])
+
+    with tab_net:
+        st.write("Ulasan dengan sentimen **Netral** (1)")
+        st.dataframe(df[df["Prediksi_Sentimen"] == 1][["Ulasan"]])
+
+    with tab_pos:
+        st.write("Ulasan dengan sentimen **Positif** (2)")
+        st.dataframe(df[df["Prediksi_Sentimen"] == 2][["Ulasan"]])
 
     # Tombol unduh hasil
     csv = df.to_csv(index=False).encode("utf-8")
