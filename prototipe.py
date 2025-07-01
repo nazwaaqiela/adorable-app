@@ -287,15 +287,16 @@ def analisis_sentimen():
 
     kolom_terpilih = ["No", "Tanggal", "Produk", "Ulasan", "Ulasan_Tokenized", "Sentimen"]
     export_df = export_df[kolom_terpilih]
-
+    
     output = io.BytesIO()
     with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
         export_df.to_excel(writer, index=False, sheet_name="Hasil Sentimen")
-        writer.save()
-        xlsx_data = output.getvalue()
 
+    xlsx_data = output.getvalue()  
+
+    # Unduh di Streamlit
     st.download_button(
-        label="📥 Unduh Hasil Sentimen (Excel)",
+        label="📥 Unduh Hasil Sentimen",
         data=xlsx_data,
         file_name="hasil_sentimen.xlsx",
         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
