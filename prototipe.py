@@ -228,19 +228,52 @@ def analisis_sentimen():
 
     st.subheader("Ulasan Berdasarkan Sentimen")
 
-    tab_neg, tab_net, tab_pos = st.tabs(["😠 Negatif", "😐 Netral", "😊 Positif"])
+    tab_neg, tab_net, tab_pos = st.tabs(["**Negatif**", "**Netral**", "**Positif**"])
 
     with tab_neg:
-        st.write("Ulasan dengan sentimen **Negatif** (0)")
-        st.dataframe(df[df["Prediksi_Sentimen"] == 0][["Ulasan"]])
+        st.write("Ulasan dengan sentimen **Negatif**")
+        neg_df = df[df["Prediksi_Sentimen"] == 0]
+        st.dataframe(neg_df[["Ulasan"]])
+
+        if not neg_df.empty:
+            all_tokens = sum(neg_df["Ulasan_Tokenized"], [])
+            text = ' '.join(all_tokens)
+            wc = WordCloud(width=800, height=400, background_color='white').generate(text)
+            fig, ax = plt.subplots(figsize=(15, 6))
+            ax.imshow(wc, interpolation='bilinear')
+            ax.axis('off')
+            ax.set_title("WordCloud Sentimen Negatif", fontsize=18)
+            st.pyplot(fig)
 
     with tab_net:
-        st.write("Ulasan dengan sentimen **Netral** (1)")
-        st.dataframe(df[df["Prediksi_Sentimen"] == 1][["Ulasan"]])
+        st.write("Ulasan dengan sentimen **Netral**")
+        net_df = df[df["Prediksi_Sentimen"] == 1]
+        st.dataframe(net_df[["Ulasan"]])
+
+        if not net_df.empty:
+            all_tokens = sum(net_df["Ulasan_Tokenized"], [])
+            text = ' '.join(all_tokens)
+            wc = WordCloud(width=800, height=400, background_color='white').generate(text)
+            fig, ax = plt.subplots(figsize=(15, 6))
+            ax.imshow(wc, interpolation='bilinear')
+            ax.axis('off')
+            ax.set_title("WordCloud Sentimen Netral", fontsize=18)
+            st.pyplot(fig)
 
     with tab_pos:
-        st.write("Ulasan dengan sentimen **Positif** (2)")
-        st.dataframe(df[df["Prediksi_Sentimen"] == 2][["Ulasan"]])
+        st.write("Ulasan dengan sentimen **Positif**")
+        pos_df = df[df["Prediksi_Sentimen"] == 2]
+        st.dataframe(pos_df[["Ulasan"]])
+
+        if not pos_df.empty:
+            all_tokens = sum(pos_df["Ulasan_Tokenized"], [])
+            text = ' '.join(all_tokens)
+            wc = WordCloud(width=800, height=400, background_color='white').generate(text)
+            fig, ax = plt.subplots(figsize=(15, 6))
+            ax.imshow(wc, interpolation='bilinear')
+            ax.axis('off')
+            ax.set_title("WordCloud Sentimen Positif", fontsize=18)
+            st.pyplot(fig)
 
     # Tombol unduh hasil
     csv = df.to_csv(index=False).encode("utf-8")
