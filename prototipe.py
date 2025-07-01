@@ -190,11 +190,36 @@ def exploratory_data_analysis():
     wc = WordCloud(width=800, height=400, background_color='white').generate(text)
 
     # Tampilkan di Streamlit
-    st.subheader("WordCloud dari Seluruh Ulasan")
+    st.subheader("WordCloud")
     fig, ax = plt.subplots(figsize=(15, 7))
     ax.imshow(wc, interpolation='bilinear')
     ax.axis('off')
-    ax.set_title("WordCloud Semua Ulasan", fontsize=20)
+    ax.set_title("WordCloud Ulasan", fontsize=20)
+    st.pyplot(fig)
+
+    # Fungsi untuk buat bigram
+    def generate_bigrams(tokens_list):
+        return zip(tokens_list, tokens_list[1:])
+
+    # Ambil semua token ulasan
+    token_lists = df["Ulasan_Tokenized"].tolist()
+
+    all_bigrams = []
+    for tokens in token_lists:
+        bigrams = generate_bigrams(tokens)
+        all_bigrams.extend([' '.join(bigram) for bigram in bigrams])
+
+    # Gabungkan jadi satu string
+    text = ' '.join(all_bigrams)
+
+    # Buat dan tampilkan WordCloud
+    wc = WordCloud(width=800, height=400, background_color='white').generate(text)
+
+    st.subheader("WordCloud Bigram dari Ulasan")
+    fig, ax = plt.subplots(figsize=(15, 7))
+    ax.imshow(wc, interpolation='bilinear')
+    ax.axis('off')
+    ax.set_title("WordCloud Bigram", fontsize=20)
     st.pyplot(fig)
 
 def analisis_sentimen():
