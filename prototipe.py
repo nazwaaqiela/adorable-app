@@ -227,6 +227,22 @@ def analisis_sentimen():
         st.error(f"Gagal melakukan prediksi: {e}")
         return
 
+    label_map = {0: "Negatif", 1: "Netral", 2: "Positif"}
+    export_df = df.copy()
+    export_df["Sentimen"] = export_df["Prediksi_Sentimen"].map(label_map)
+
+    st.subheader("Distribusi Sentimen")
+
+    sentimen_counts = export_df["Sentimen"].value_counts().reindex(["Negatif", "Netral", "Positif"], fill_value=0)
+
+    fig, ax = plt.subplots(figsize=(6, 4))
+    sentimen_counts.plot(kind="bar", color=["#FF6B6B", "#FFD93D", "#6BCB77"], ax=ax)
+    ax.set_title("Jumlah Ulasan per Sentimen")
+    ax.set_xlabel("Sentimen")
+    ax.set_ylabel("Jumlah")
+    ax.tick_params(axis='x', rotation=0)
+    st.pyplot(fig)
+
     st.subheader("Ulasan Berdasarkan Sentimen")
 
     tab_neg, tab_net, tab_pos = st.tabs(["**Negatif**", "**Netral**", "**Positif**"])
@@ -275,15 +291,6 @@ def analisis_sentimen():
             ax.axis('off')
             ax.set_title("WordCloud Sentimen Positif", fontsize=18)
             st.pyplot(fig)
-
-    label_map = {
-        0: "Negatif",
-        1: "Netral",
-        2: "Positif"
-    }
-
-    export_df = df.copy()
-    export_df["Sentimen"] = export_df["Prediksi_Sentimen"].map(label_map)
 
     kolom_terpilih = ["No", "Tanggal", "Produk", "Ulasan", "Ulasan_Tokenized", "Sentimen"]
     export_df = export_df[kolom_terpilih]
