@@ -8,4 +8,4 @@ nltk
 scikit-learn
 xlsxwriter
 gensim
-numpy==1.23.5
+numpy
