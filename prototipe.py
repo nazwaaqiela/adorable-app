@@ -182,42 +182,20 @@ def exploratory_data_analysis():
     ax.tick_params(axis='x', rotation=45)
     st.pyplot(fig)
 
-    # Fungsi untuk generate n-gram
-    def generate_ngrams(text_series, n=2):
-        words = ' '.join(text_series).split()
-        n_grams = ngrams(words, n)
-        return [' '.join(gram) for gram in n_grams]
-
-    # Generate bigram & trigram
-    bigrams = generate_ngrams(df["Ulasan_String"], n=2)
-    trigrams = generate_ngrams(df["Ulasan_String"], n=3)
-
-    # Gabungkan menjadi teks
-    bigram_text = ' '.join(bigrams)
-    trigram_text = ' '.join(trigrams)
+    # Gabungkan semua token jadi satu string
+    all_tokens = sum(df["Ulasan_Tokenized"], [])
+    text = ' '.join(all_tokens)
 
     # Buat WordCloud
-    def create_wordcloud(text, title):
-        wordcloud = WordCloud(width=800, 
-                             height=400,
-                             background_color='white',
-                             colormap='viridis',
-                             max_words=100).generate(text)
-    
-        plt.figure(figsize=(10, 5))
-        plt.imshow(wordcloud, interpolation='bilinear')
-        plt.title(title, fontsize=15)
-        plt.axis('off')
-        return plt
+    wc = WordCloud(width=800, height=400, background_color='white').generate(text)
 
     # Tampilkan di Streamlit
-    st.subheader("WordCloud Bigram (2 Kata)")
-    bigram_plot = create_wordcloud(bigram_text, "Bigram WordCloud")
-    st.pyplot(bigram_plot)
-
-    st.subheader("WordCloud Trigram (3 Kata)")
-    trigram_plot = create_wordcloud(trigram_text, "Trigram WordCloud")
-    st.pyplot(trigram_plot)
+    st.subheader("WordCloud dari Seluruh Ulasan")
+    fig, ax = plt.subplots(figsize=(15, 7))
+    ax.imshow(wc, interpolation='bilinear')
+    ax.axis('off')
+    ax.set_title("WordCloud Semua Ulasan", fontsize=20)
+    st.pyplot(fig)
 
 def analisis_sentimen():
     st.header("Analisis Sentimen")
