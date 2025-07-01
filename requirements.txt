@@ -6,3 +6,4 @@ openpyxl
 wordcloud 
 nltk
 scikit-learn
+xlsxwriter
