@@ -8,3 +8,5 @@ nltk
 scikit-learn
 xlsxwriter
 gensim
+Phrases
+CoherenceModel
