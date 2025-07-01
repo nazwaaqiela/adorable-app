@@ -3,8 +3,6 @@ import pandas as pd
 import re
 from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
 import matplotlib.pyplot as plt
-from sklearn.feature_extraction.text import CountVectorizer
-import seaborn as sns
 
 USERNAME = "admincs"
 PASSWORD = "adorable123"
