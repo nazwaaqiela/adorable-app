@@ -254,7 +254,8 @@ def analisis_sentimen():
     ax.set_ylabel("Jumlah", fontsize=9)
     ax.tick_params(axis='x', labelsize=9)
     ax.tick_params(axis='y', labelsize=8)
-        st.subheader("Ulasan Berdasarkan Sentimen")
+    
+    st.subheader("Ulasan Berdasarkan Sentimen")
 
     tab_neg, tab_net, tab_pos = st.tabs(["**Negatif**", "**Netral**", "**Positif**"])
 
