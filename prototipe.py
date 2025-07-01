@@ -197,34 +197,44 @@ def exploratory_data_analysis():
     ax.set_title("WordCloud Ulasan", fontsize=20)
     st.pyplot(fig)
 
-    # Fungsi untuk buat bigram
-    def generate_bigrams(tokens_list):
-        return zip(tokens_list, tokens_list[1:])
-
-    # Ambil semua token ulasan
-    token_lists = df["Ulasan_Tokenized"].tolist()
-
-    all_bigrams = []
-    for tokens in token_lists:
-        bigrams = generate_bigrams(tokens)
-        all_bigrams.extend([' '.join(bigram) for bigram in bigrams])
-
-    # Gabungkan jadi satu string
-    text = ' '.join(all_bigrams)
-
-    # Buat dan tampilkan WordCloud
-    wc = WordCloud(width=800, height=400, background_color='white').generate(text)
-    st.write("Contoh bigram:", all_bigrams[:10])
-    st.subheader("WordCloud Bigram dari Ulasan")
-    fig, ax = plt.subplots(figsize=(15, 7))
-    ax.imshow(wc, interpolation='bilinear')
-    ax.axis('off')
-    ax.set_title("WordCloud Bigram", fontsize=20)
-    st.pyplot(fig)
-
 def analisis_sentimen():
-    st.header("Analisis Sentimen")
-    st.write("Halaman untuk analisis sentimen.")
+    st.header("Analisis Sentimen Ulasan")
+
+    if "df" not in st.session_state or "Ulasan_Tokenized" not in st.session_state.df.columns:
+        st.warning("⚠ Silakan upload dan bersihkan data terlebih dahulu.")
+        return
+
+    df = st.session_state.df.copy()
+
+    # Gabungkan token jadi string ulasan
+    df["Ulasan_String"] = df["Ulasan_Tokenized"].apply(lambda tokens: ' '.join(tokens))
+
+    # Load model pipeline
+    try:
+        with open("model_sentimen.pkl", "rb") as f:
+            model = pickle.load(f)
+    except Exception as e:
+        st.error(f"Gagal memuat model: {e}")
+        return
+
+    # Prediksi sentimen
+    try:
+        df["Prediksi_Sentimen"] = model.predict(df["Ulasan_String"])
+        st.success("Sentimen berhasil diprediksi!")
+    except Exception as e:
+        st.error(f"Gagal melakukan prediksi: {e}")
+        return
+
+    # Tampilkan hasil
+    st.subheader("Hasil Prediksi Sentimen")
+    st.dataframe(df[["Ulasan", "Ulasan_String", "Prediksi_Sentimen"]].head())
+
+    # Tombol unduh hasil
+    csv = df.to_csv(index=False).encode("utf-8")
+    st.download_button("📥 Unduh Hasil Sentimen (.csv)", csv, file_name="hasil_sentimen.csv", mime="text/csv")
+
+    # Simpan kembali ke session_state
+    st.session_state.df = df
 
 def analisis_topik():
     st.header("Analisis Topik")
