@@ -234,9 +234,20 @@ def analisis_sentimen():
     st.subheader("Distribusi Sentimen")
 
     sentimen_counts = export_df["Sentimen"].value_counts().reindex(["Negatif", "Netral", "Positif"], fill_value=0)
+    colors = {"Negatif": "red", "Netral": "gold", "Positif": "green"}
 
-    fig, ax = plt.subplots(figsize=(6, 4))
-    sentimen_counts.plot(kind="bar", color=["#FF6B6B", "#FFD93D", "#6BCB77"], ax=ax)
+    fig, ax = plt.subplots(figsize=(5, 3.5))  # ukuran lebih kecil
+    bars = ax.bar(sentimen_counts.index, sentimen_counts.values,
+                  color=[colors[s] for s in sentimen_counts.index])
+
+    for bar in bars:
+        height = bar.get_height()
+        ax.annotate(f'{int(height)}',
+                    xy=(bar.get_x() + bar.get_width() / 2, height),
+                    xytext=(0, 3),  
+                    textcoords="offset points",
+                    ha='center', va='bottom', fontsize=10)
+
     ax.set_title("Jumlah Ulasan per Sentimen")
     ax.set_xlabel("Sentimen")
     ax.set_ylabel("Jumlah")
