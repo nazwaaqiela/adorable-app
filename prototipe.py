@@ -3,6 +3,8 @@ import pandas as pd
 import re
 from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
 import matplotlib.pyplot as plt
+from sklearn.feature_extraction.text import CountVectorizer
+import seaborn as sns
 
 USERNAME = "admincs"
 PASSWORD = "adorable123"
@@ -179,6 +181,38 @@ def exploratory_data_analysis():
     ax.set_ylabel("Frequency")
     ax.tick_params(axis='x', rotation=45)
     st.pyplot(fig)
+    
+    # Pilihan n-gram
+    ngram_type = st.selectbox("Pilih jenis n-gram:", ["Unigram", "Bigram", "Trigram", "Gabungan Bigram & Trigram"])
+    top_n = st.slider("Tampilkan berapa banyak n-gram teratas?", min_value=5, max_value=25, value=15)
+
+    # Tentukan rentang n-gram
+    if ngram_type == "Unigram":
+        ngram_range = (1, 1)
+    elif ngram_type == "Bigram":
+        ngram_range = (2, 2)
+    elif ngram_type == "Trigram":
+        ngram_range = (3, 3)
+    else:
+        ngram_range = (2, 3)  # Gabungan bigram dan trigram
+
+    def plot_ngrams(corpus, ngram_range, top_n):
+        vec = CountVectorizer(ngram_range=ngram_range)
+        bag = vec.fit_transform(corpus)
+        sum_words = bag.sum(axis=0)
+
+        word_freq = [(word, sum_words[0, idx]) for word, idx in vec.vocabulary_.items()]
+        word_freq = sorted(word_freq, key=lambda x: x[1], reverse=True)[:top_n]
+        ngram_df = pd.DataFrame(word_freq, columns=["N-gram", "Frequency"])
+
+        plt.figure(figsize=(10, 5))
+        sns.barplot(x="Frequency", y="N-gram", data=ngram_df)
+        plt.title(f"Top {top_n} {ngram_type}")
+        st.pyplot(plt)
+
+    # Tampilkan hasil
+    st.subheader("Visualisasi N-gram")
+    plot_ngrams(df["Ulasan_String"], ngram_range, top_n)
 
 def analisis_sentimen():
     st.header("Analisis Sentimen")
