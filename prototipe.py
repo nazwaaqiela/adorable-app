@@ -236,7 +236,7 @@ def analisis_sentimen():
     sentimen_counts = export_df["Sentimen"].value_counts().reindex(["Negatif", "Netral", "Positif"], fill_value=0)
     colors = {"Negatif": "red", "Netral": "gold", "Positif": "green"}
 
-    fig, ax = plt.subplots(figsize=(5, 3.5))  
+    fig, ax = plt.subplots(figsize=(4, 3))  
     bars = ax.bar(sentimen_counts.index, sentimen_counts.values,
                   color=[colors[s] for s in sentimen_counts.index])
 
@@ -246,14 +246,15 @@ def analisis_sentimen():
                     xy=(bar.get_x() + bar.get_width() / 2, height),
                     xytext=(0, 3),
                     textcoords="offset points",
-                    ha='center', va='bottom',
-                    fontsize=7)  # 👉 ukuran angka di atas bar
+                    ha='center', va='bottom', fontsize=8)  
 
     ax.set_title("Jumlah Ulasan per Sentimen", fontsize=10)
     ax.set_xlabel("Sentimen", fontsize=9)
     ax.set_ylabel("Jumlah", fontsize=9)
     ax.tick_params(axis='x', labelsize=9)
     ax.tick_params(axis='y', labelsize=8)
+
+    st.pyplot(fig)
     
     st.subheader("Ulasan Berdasarkan Sentimen")
 
