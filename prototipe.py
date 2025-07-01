@@ -236,7 +236,7 @@ def analisis_sentimen():
     sentimen_counts = export_df["Sentimen"].value_counts().reindex(["Negatif", "Netral", "Positif"], fill_value=0)
     colors = {"Negatif": "red", "Netral": "gold", "Positif": "green"}
 
-    fig, ax = plt.subplots(figsize=(1, 0.5))  
+    fig, ax = plt.subplots(figsize=(5, 3.5))  
     bars = ax.bar(sentimen_counts.index, sentimen_counts.values,
                   color=[colors[s] for s in sentimen_counts.index])
 
