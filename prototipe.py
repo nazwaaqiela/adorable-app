@@ -56,7 +56,7 @@ def upload_data():
         st.success("Data berhasil diunggah!")
 
     # Informasi dataset
-    st.subheader("📈 Informasi Dataset")
+    st.subheader("Informasi Dataset")
     st.write(f"Jumlah baris: {df.shape[0]}")
     st.write(f"Jumlah kolom: {df.shape[1]}")
 
@@ -89,8 +89,8 @@ def upload_data():
     # Upload kamus slang dan stopwords
     st.subheader("Unggah Kamus Slang dan Stopwords")
 
-    slang_file = st.file_uploader("Upload Kamus Slang (.xlsx)", type="xlsx", key="slang")
-    stopwords_file = st.file_uploader("Upload Stopwords (.xlsx)", type="xlsx", key="stopwords")
+    slang_file = st.file_uploader("Unggah Kamus Slang (.xlsx)", type="xlsx", key="slang")
+    stopwords_file = st.file_uploader("Unggah Stopwords (.xlsx)", type="xlsx", key="stopwords")
 
     if slang_file and stopwords_file:
         kamus_slang_df = pd.read_excel(slang_file)
@@ -137,7 +137,8 @@ def upload_data():
             st.error("Kolom 'Ulasan' tidak ditemukan dalam data.")
             return
 
-        st.write("Memproses pembersihan teks...")
+        status_placeholder = st.empty()
+        status_placeholder.write("Memproses pembersihan teks...")
 
         df["Ulasan_Cleaned"] = df["Ulasan"].apply(clean_text)
         df["Ulasan_Normalized"] = df["Ulasan_Cleaned"].apply(replace_slang)
@@ -146,6 +147,7 @@ def upload_data():
         df["Ulasan_Stemmed2"] = df["Ulasan_Stemmed"].apply(remove_noise)
         df["Ulasan_Tokenized"] = df["Ulasan_Stemmed2"].apply(tokenize)
 
+        status_placeholder.empty()
         st.success("Teks berhasil dibersihkan!")
 
         # Tampilkan hasil
@@ -195,7 +197,7 @@ def main():
     else:
         st.sidebar.title("Navigasi")
         page = st.sidebar.radio("Pilih Halaman", [
-            "Halaman Utama", "Unggah Data", "Exploratory Data Analysis",
+            "Halaman Utama", "Unggah Data", "Analisis Data Eksploratori",
             "Analisis Sentimen", "Analisis Topik", "Keluar"
         ])
 
@@ -203,7 +205,7 @@ def main():
             home()
         elif page == "Unggah Data":
             upload_data()
-        elif page == "Exploratory Data Analysis":
+        elif page == "Analisis Data Eksploratori":
             exploratory_data_analysis()
         elif page == "Analisis Sentimen":
             analisis_sentimen()
