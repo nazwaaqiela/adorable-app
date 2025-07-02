@@ -93,7 +93,6 @@ def upload_data():
     kamus_slang_path = "kamus_slang.xlsx"
     stopwords_path = "stopwords.xlsx"
 
-    if kamus_slang_path and stopwords_path:
         kamus_slang_df = pd.read_excel(kamus_slang_path)
         stopwords_df = pd.read_excel(stopwords_path)
 
