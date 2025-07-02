@@ -7,4 +7,6 @@ wordcloud
 nltk
 scikit-learn
 XlsxWriter
-gensim
+numpy==1.24.3
+cython==0.29.30
+gensim==4.3.1
