@@ -93,66 +93,66 @@ def upload_data():
     kamus_slang_path = "https://github.com/nazwaaqiela/adorable-app/blob/e9beb81d42760d168869f14554ef6f0a36d61c2c/kamus_slang.xlsx"
     stopwords_path = "https://github.com/nazwaaqiela/adorable-app/blob/e9beb81d42760d168869f14554ef6f0a36d61c2c/stopwords.xlsx"
 
-        kamus_slang_df = pd.read_excel(kamus_slang_path)
-        stopwords_df = pd.read_excel(stopwords_path)
+    kamus_slang_df = pd.read_excel(kamus_slang_path)
+    stopwords_df = pd.read_excel(stopwords_path)
 
-        kamus_slang = dict(zip(kamus_slang_df["slang"], kamus_slang_df["formal"]))
-        list_stopwords = set(stopwords_df["stopword"])
-        kata_hapus = {'nya', 'ya', 'sih', 'banget', 'gitu', 'deh', 'huhu', 'sayang', 'kali', 'wkwk', 'eh', 'ku', 'kak', 'adorable', 'sepatu', 'pakai', 'sih', 'dah', 'moga', 'semoga', 'x', 'projects', 'beli', 'pokok'}
+    kamus_slang = dict(zip(kamus_slang_df["slang"], kamus_slang_df["formal"]))
+    list_stopwords = set(stopwords_df["stopword"])
+    kata_hapus = {'nya', 'ya', 'sih', 'banget', 'gitu', 'deh', 'huhu', 'sayang', 'kali', 'wkwk', 'eh', 'ku', 'kak', 'adorable', 'sepatu', 'pakai', 'sih', 'dah', 'moga', 'semoga', 'x', 'projects', 'beli', 'pokok'}
 
-        factory = StemmerFactory()
-        stemmer = factory.create_stemmer()
+    factory = StemmerFactory()
+    stemmer = factory.create_stemmer()
 
-        # Step 1 - cleaning karakter, huruf berulang, spasi
-        def clean_text(text):
-            text = re.sub(r'[^a-z\s]', '', str(text), flags=re.IGNORECASE)
-            text = re.sub(r'\s+', ' ', text).strip()
-            text = re.sub(r'(.)\1{2,}', r'\1\1', text)
-            return text.lower()
+    # Step 1 - cleaning karakter, huruf berulang, spasi
+    def clean_text(text):
+        text = re.sub(r'[^a-z\s]', '', str(text), flags=re.IGNORECASE)
+        text = re.sub(r'\s+', ' ', text).strip()
+        text = re.sub(r'(.)\1{2,}', r'\1\1', text)
+        return text.lower()
 
-        # Step 2 - ganti slang
-        def replace_slang(text):
-            words = text.split()
-            return ' '.join([kamus_slang.get(w, w) for w in words])
+    # Step 2 - ganti slang
+    def replace_slang(text):
+        words = text.split()
+        return ' '.join([kamus_slang.get(w, w) for w in words])
 
-        # Step 3 - hapus stopwords
-        def remove_stopwords(text):
-            words = text.split()
-            return ' '.join([w for w in words if w not in list_stopwords])
+    # Step 3 - hapus stopwords
+    def remove_stopwords(text):
+        words = text.split()
+        return ' '.join([w for w in words if w not in list_stopwords])
 
-        # Step 4 - stemming
-        def apply_stemming(text):
-            return stemmer.stem(text)
+    # Step 4 - stemming
+    def apply_stemming(text):
+        return stemmer.stem(text)
 
-        # Step 5 - hapus noise
-        def remove_noise(text):
-            words = text.split()
-            return ' '.join([w for w in words if w not in kata_hapus])
+    # Step 5 - hapus noise
+    def remove_noise(text):
+        words = text.split()
+        return ' '.join([w for w in words if w not in kata_hapus])
 
-        # Step 6 - tokenisasi
-        def tokenize(text):
-            return text.split()
+    # Step 6 - tokenisasi
+    def tokenize(text):
+        return text.split()
 
-        if "Ulasan" not in df.columns:
-            st.error("Kolom 'Ulasan' tidak ditemukan dalam data.")
-            return
+    if "Ulasan" not in df.columns:
+        st.error("Kolom 'Ulasan' tidak ditemukan dalam data.")
+        return
 
-        status_placeholder = st.empty()
-        status_placeholder.write("Memproses pembersihan teks...")
+    status_placeholder = st.empty()
+    status_placeholder.write("Memproses pembersihan teks...")
 
-        df["Ulasan_Cleaned"] = df["Ulasan"].apply(clean_text)
-        df["Ulasan_Normalized"] = df["Ulasan_Cleaned"].apply(replace_slang)
-        df["Ulasan_Removed"] = df["Ulasan_Normalized"].apply(remove_stopwords)
-        df["Ulasan_Stemmed"] = df["Ulasan_Removed"].apply(apply_stemming)
-        df["Ulasan_Stemmed2"] = df["Ulasan_Stemmed"].apply(remove_noise)
-        df["Ulasan_Tokenized"] = df["Ulasan_Stemmed2"].apply(tokenize)
+    df["Ulasan_Cleaned"] = df["Ulasan"].apply(clean_text)
+    df["Ulasan_Normalized"] = df["Ulasan_Cleaned"].apply(replace_slang)
+    df["Ulasan_Removed"] = df["Ulasan_Normalized"].apply(remove_stopwords)
+    df["Ulasan_Stemmed"] = df["Ulasan_Removed"].apply(apply_stemming)
+    df["Ulasan_Stemmed2"] = df["Ulasan_Stemmed"].apply(remove_noise)
+    df["Ulasan_Tokenized"] = df["Ulasan_Stemmed2"].apply(tokenize)
 
-        status_placeholder.empty()
-        st.success("Teks berhasil dibersihkan!")
+    status_placeholder.empty()
+    st.success("Teks berhasil dibersihkan!")
 
-        # Tampilkan hasil
-        st.subheader("Cuplikan Hasil Pembersihan")
-        st.dataframe(df["Ulasan_Tokenized"].head())
+    # Tampilkan hasil
+    st.subheader("Cuplikan Hasil Pembersihan Data")
+    st.dataframe(df["Ulasan_Tokenized"].head())
 
 
 def exploratory_data_analysis():
