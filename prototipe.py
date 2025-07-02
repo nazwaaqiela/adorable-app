@@ -90,15 +90,12 @@ def upload_data():
     st.write("10 Data Teratas")
     st.dataframe(df.head(10))
 
-    # Upload kamus slang dan stopwords
-    st.subheader("Unggah Kamus Slang dan Stopwords")
+    kamus_slang_path = "kamus_slang.xlsx"
+    stopwords_path = "stopwords.xlsx"
 
-    slang_file = st.file_uploader("Unggah Kamus Slang (.xlsx)", type="xlsx", key="slang")
-    stopwords_file = st.file_uploader("Unggah Stopwords (.xlsx)", type="xlsx", key="stopwords")
-
-    if slang_file and stopwords_file:
-        kamus_slang_df = pd.read_excel(slang_file)
-        stopwords_df = pd.read_excel(stopwords_file)
+    if kamus_slang_path and stopwords_path:
+        kamus_slang_df = pd.read_excel(kamus_slang_path)
+        stopwords_df = pd.read_excel(stopwords_path)
 
         kamus_slang = dict(zip(kamus_slang_df["slang"], kamus_slang_df["formal"]))
         list_stopwords = set(stopwords_df["stopword"])
