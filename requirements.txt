@@ -7,3 +7,4 @@ wordcloud
 nltk
 scikit-learn
 XlsxWriter
+gensim
