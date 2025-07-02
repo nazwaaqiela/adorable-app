@@ -7,7 +7,6 @@ from wordcloud import WordCloud
 from nltk import ngrams
 import pickle
 import io
-import ast
 
 USERNAME = "admincs"
 PASSWORD = "adorable123"
