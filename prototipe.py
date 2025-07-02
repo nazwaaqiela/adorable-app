@@ -90,14 +90,18 @@ def upload_data():
     st.write("10 Data Teratas")
     st.dataframe(df.head(10))
 
-    kamus_slang_path = "https://github.com/nazwaaqiela/adorable-app/blob/e9beb81d42760d168869f14554ef6f0a36d61c2c/kamus_slang.xlsx"
-    stopwords_path = "https://github.com/nazwaaqiela/adorable-app/blob/e9beb81d42760d168869f14554ef6f0a36d61c2c/stopwords.xlsx"
+    kamus_slang_path = "kamus_slang.xlsx"
+    stopwords_path = "stopwords.xlsx"
 
-    kamus_slang_df = pd.read_excel(kamus_slang_path)
-    stopwords_df = pd.read_excel(stopwords_path)
-
-    kamus_slang = dict(zip(kamus_slang_df["slang"], kamus_slang_df["formal"]))
-    list_stopwords = set(stopwords_df["stopword"])
+    try:
+        kamus_slang_df = pd.read_excel(kamus_slang_path)
+        stopwords_df = pd.read_excel(stopwords_path)
+    
+        kamus_slang = dict(zip(kamus_slang_df["slang"], kamus_slang_df["formal"]))
+        list_stopwords = set(stopwords_df["stopword"])
+    except Exception as e:
+        st.error(f"Error loading files: {e}")
+    
     kata_hapus = {'nya', 'ya', 'sih', 'banget', 'gitu', 'deh', 'huhu', 'sayang', 'kali', 'wkwk', 'eh', 'ku', 'kak', 'adorable', 'sepatu', 'pakai', 'sih', 'dah', 'moga', 'semoga', 'x', 'projects', 'beli', 'pokok'}
 
     factory = StemmerFactory()
