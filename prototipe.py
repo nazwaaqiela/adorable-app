@@ -355,7 +355,7 @@ def analisis_topik():
     term_matrix_positif = [dictionary_positif.doc2bow(text) for text in df_positif['Ulasan_Tokenized']]
 
     # parameter untuk pencarian jumlah topik optimal
-    start, limit, step = 2, 16, 1
+    start, limit, step = 2, 11, 1
 
     def find_optimal_topics(coherence_values, start=2, step=3):
         max_coherence_idx = np.argmax(coherence_values)
@@ -419,7 +419,6 @@ def analisis_topik():
         return [word.split('*')[1].strip().replace('"', '') for word in topic.split('+')]
     
     with tab_neg:
-        st.subheader(f"Topik untuk Sentimen Negatif ({num_topics_negatif} topik):")
         topics_list_negatif = []
         for idx, topic in lda_model_negatif.print_topics(num_topics=num_topics_negatif):
             words = extract_words_from_topic(topic)
@@ -429,7 +428,6 @@ def analisis_topik():
         st.dataframe(topics_df_negatif)
     
     with tab_net:
-        st.subheader(f"Topik untuk Sentimen Netral ({num_topics_netral} topik):")
         topics_list_netral = []
         for idx, topic in lda_model_netral.print_topics(num_topics=num_topics_netral):
             words = extract_words_from_topic(topic)
@@ -439,7 +437,6 @@ def analisis_topik():
         st.dataframe(topics_df_netral)
     
     with tab_pos:
-        st.subheader(f"Topik untuk Sentimen Positif ({num_topics_positif} topik):")
         topics_list_positif = []
         for idx, topic in lda_model_positif.print_topics(num_topics=num_topics_positif):
             words = extract_words_from_topic(topic)
