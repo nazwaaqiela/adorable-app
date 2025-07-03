@@ -499,7 +499,7 @@ def main():
         elif page == "Keluar":
             st.session_state.logged_in = False
             st.success("Logout berhasil.")
-            st.experimental_rerun()
+            st.rerun()
 
 if __name__ == "__main__":
     main()
