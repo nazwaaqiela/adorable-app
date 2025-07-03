@@ -33,15 +33,16 @@ def login():
 def home():
     st.header("Halaman Utama")
     st.write("Selamat datang di aplikasi analisis data ulasan!")
-      # Penjelasan tentang aplikasi
     st.write("""
-    Aplikasi ini dapat melakukan analisis data secara interaktif dan visual. Berikut adalah panduan singkat untuk memulai:
+    Aplikasi ini dapat melakukan analisis data ulasan secara interaktif dan visual. Berikut ini adalah langkah-langkah untuk analisis data yang harus dilakukan secara **berurutan**:
 
-    1. Unggah dataset dengan memilih opsi 'Unggah Data' di menu.
-    2. Pilih 'Analisis Data Eksploratori' untuk melihat gambaran umum dari data melalui grafik dan statistik deskriptif.
-    3. Pilih 'Analisis Sentimen' untuk menganalisis teks dalam dataset dan melihat sentimen yang terkandung di dalamnya.
-    4. Pilih 'Analisis Topik' untuk mengidentifikasi topik-topik utama yang terkandung dalam dataset.
-    5. Setelah analisis selesai, hasil analisis dalam bentuk grafik atau tabel dapat diunduh.
+    1. **Unggah dataset** dengan memilih opsi 'Unggah Data' di menu.
+    2. Pilih '**Analisis Data Eksploratori**' untuk melihat gambaran umum dari data melalui grafik dan statistik deskriptif.
+    3. Pilih '**Analisis Sentimen**' untuk menganalisis teks dalam dataset dan melihat sentimen yang terkandung di dalamnya.
+    4. Pilih '**Analisis Topik**' untuk mengidentifikasi topik-topik utama yang terkandung dalam dataset.
+    
+    Setelah analisis selesai, hasil analisis dalam bentuk file excel dapat diunduh.
+
     """)
 
 
@@ -77,18 +78,28 @@ def upload_data():
     if not missing_cols.empty:
         st.write("Missing values per kolom:")
         st.dataframe(missing_cols)
+        
+        # Menghapus missing values
+        if st.button("Hapus Missing Values"):
+            df = df.dropna()
+            st.success("Missing values berhasil dihapus!")
     else:
         st.write("Tidak ada missing values.")
-
+    
     # Cek duplikat data
     dup_count = df.duplicated().sum()
     if dup_count > 0:
         st.write(f"Jumlah baris duplikat: {dup_count}")
         if st.checkbox("Tampilkan baris duplikat"):
             st.dataframe(df[df.duplicated()])
+        
+        # Menghapus duplikat
+        if st.button("Hapus Duplikat"):
+            df = df.drop_duplicates()
+            st.success("Duplikat berhasil dihapus!")
     else:
         st.write("Tidak ada baris duplikat.")
-
+    
     # Tipe data
     st.write("Tipe Data per Kolom:")
     st.dataframe(df.dtypes.astype(str))
