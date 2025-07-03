@@ -334,6 +334,14 @@ def analisis_sentimen():
 
 def analisis_topik():
     st.header("Analisis Topik Ulasan")
+    
+    if "df" not in st.session_state or "Ulasan_Tokenized" not in st.session_state.df.columns:
+        st.warning("⚠ Silakan upload dan bersihkan data terlebih dahulu.")
+        return
+
+    df = st.session_state.df.copy()
+
+    st.dataframe(pos_df[["Ulasan"]])
   
 def main():
     if "logged_in" not in st.session_state:
