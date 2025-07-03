@@ -455,6 +455,23 @@ def analisis_topik():
         
         topics_df_positif = pd.DataFrame(topics_list_positif, columns=["Topik", "Kata 1", "Kata 2", "Kata 3", "Kata 4", "Kata 5", "Kata 6", "Kata 7", "Kata 8", "Kata 9", "Kata 10"])
         st.dataframe(topics_df_positif)
+
+    # Membuat file Excel di dalam memori
+    output = io.BytesIO()
+    with pd.ExcelWriter(output, engine="xlsxwriter") as writer:
+        topics_df_negatif.to_excel(writer, index=False, sheet_name="Topik Negatif")
+        topics_df_netral.to_excel(writer, index=False, sheet_name="Topik Netral")
+        topics_df_positif.to_excel(writer, index=False, sheet_name="Topik Positif")
+    
+    output.seek(0) 
+    
+    # Menyediakan tombol unduh untuk file Excel
+    st.download_button(
+        label="📥 Unduh Hasil Analisis Topik",
+        data=output,
+        file_name="hasil_topik.xlsx",
+        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
   
 def main():
     if "logged_in" not in st.session_state:
