@@ -341,7 +341,97 @@ def analisis_topik():
 
     df = st.session_state.df.copy()
 
-    st.dataframe(pos_df[["Ulasan"]])
+    df_negatif = df[df['Prediksi_Sentimen'] == 0]
+    df_netral = df[df['Prediksi_Sentimen'] == 1]
+    df_positif = df[df['Prediksi_Sentimen'] == 2]
+
+    dictionary_negatif = corpora.Dictionary(df_negatif['Ulasan_Tokenized'])
+    term_matrix_negatif = [dictionary_negatif.doc2bow(text) for text in df_negatif['Ulasan_Tokenized']]
+
+    dictionary_netral = corpora.Dictionary(df_netral['Ulasan_Tokenized'])
+    term_matrix_netral = [dictionary_netral.doc2bow(text) for text in df_netral['Ulasan_Tokenized']]
+
+    dictionary_positif = corpora.Dictionary(df_positif['Ulasan_Tokenized'])
+    term_matrix_positif = [dictionary_positif.doc2bow(text) for text in df_positif['Ulasan_Tokenized']]
+
+    # parameter untuk pencarian jumlah topik optimal
+    start, limit, step = 2, 16, 1
+
+    def find_optimal_topics(coherence_values, start=2, step=3):
+        max_coherence_idx = np.argmax(coherence_values)
+        optimal_topics = start + (max_coherence_idx * step)
+        max_coherence = coherence_values[max_coherence_idx]
+        return optimal_topics, max_coherence
+
+    def compute_coherence_values(dictionary, corpus, texts, start, limit, step):
+        coherence_values = []
+        for num_topics in range(start, limit, step):
+            model = gensim.models.LdaModel(corpus=corpus,
+                                           id2word=dictionary,
+                                           num_topics=num_topics,
+                                           random_state=42,
+                                           passes=10,
+                                           alpha='auto')
+            coherencemodel = CoherenceModel(model=model, texts=texts, dictionary=dictionary, coherence='c_v')
+            coherence_values.append(coherencemodel.get_coherence())
+        return coherence_values
+
+    coherence_values_negatif = compute_coherence_values(dictionary_negatif, term_matrix_negatif, df_negatif['Ulasan_Tokenized'], start, limit, step)
+    coherence_values_netral = compute_coherence_values(dictionary_netral, term_matrix_netral, df_netral['Ulasan_Tokenized'], start, limit, step)
+    coherence_values_positif = compute_coherence_values(dictionary_positif, term_matrix_positif, df_positif['Ulasan_Tokenized'], start, limit, step)
+
+    num_topics_negatif, _ = find_optimal_topics(coherence_values_negatif, start, step)
+    num_topics_netral, _ = find_optimal_topics(coherence_values_netral, start, step)
+    num_topics_positif, _ = find_optimal_topics(coherence_values_positif, start, step)
+
+    lda_model_negatif = gensim.models.LdaModel(
+        corpus=term_matrix_negatif,
+        id2word=dictionary_negatif,
+        num_topics=num_topics_negatif,
+        random_state=42,
+        passes=10,
+        alpha='auto'
+    )
+
+    lda_model_netral = gensim.models.LdaModel(
+        corpus=term_matrix_netral,
+        id2word=dictionary_netral,
+        num_topics=num_topics_netral,
+        random_state=42,
+        passes=10,
+        alpha='auto'
+    )
+
+    lda_model_positif = gensim.models.LdaModel(
+        corpus=term_matrix_positif,
+        id2word=dictionary_positif,
+        num_topics=num_topics_positif,
+        random_state=42,
+        passes=10,
+        alpha='auto'
+    )
+
+    st.subheader("Topik Berdasarkan Sentimen")
+
+    tab_neg, tab_net, tab_pos = st.tabs(["**Negatif**", "**Netral**", "**Positif**"])
+    
+    with tab_neg:
+        st.subheader(f"Topik untuk Sentimen Negatif ({num_topics_negatif} topik):")
+        for idx, topic in lda_model_negatif.print_topics(num_topics=num_topics_negatif):
+            st.write(f"Topik #{idx+1}:")
+            st.write(topic)
+    
+    with tab_net:
+        st.subheader(f"Topik untuk Sentimen Netral ({num_topics_netral} topik):")
+        for idx, topic in lda_model_netral.print_topics(num_topics=num_topics_netral):
+            st.write(f"Topik #{idx+1}:")
+            st.write(topic)
+
+    with tab_pos:
+        st.subheader(f"Topik untuk Sentimen Positif ({num_topics_positif} topik):")
+        for idx, topic in lda_model_positif.print_topics(num_topics=num_topics_positif):
+            st.write(f"Topik #{idx+1}:")
+            st.write(topic)
   
 def main():
     if "logged_in" not in st.session_state:
