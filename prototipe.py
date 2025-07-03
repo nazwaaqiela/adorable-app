@@ -415,23 +415,38 @@ def analisis_topik():
 
     tab_neg, tab_net, tab_pos = st.tabs(["**Negatif**", "**Netral**", "**Positif**"])
     
+    def extract_words_from_topic(topic):
+        return [word.split('*')[1].strip().replace('"', '') for word in topic.split('+')]
+    
     with tab_neg:
         st.subheader(f"Topik untuk Sentimen Negatif ({num_topics_negatif} topik):")
+        topics_list_negatif = []
         for idx, topic in lda_model_negatif.print_topics(num_topics=num_topics_negatif):
-            st.write(f"Topik #{idx+1}:")
-            st.write(topic)
+            words = extract_words_from_topic(topic)
+            topics_list_negatif.append([f"Topik #{idx+1}"] + words)
+        
+        topics_df_negatif = pd.DataFrame(topics_list_negatif, columns=["Topik", "Kata 1", "Kata 2", "Kata 3", "Kata 4", "Kata 5", "Kata 6", "Kata 7", "Kata 8", "Kata 9", "Kata 10"])
+        st.dataframe(topics_df_negatif)
     
     with tab_net:
         st.subheader(f"Topik untuk Sentimen Netral ({num_topics_netral} topik):")
+        topics_list_netral = []
         for idx, topic in lda_model_netral.print_topics(num_topics=num_topics_netral):
-            st.write(f"Topik #{idx+1}:")
-            st.write(topic)
-
+            words = extract_words_from_topic(topic)
+            topics_list_netral.append([f"Topik #{idx+1}"] + words)
+        
+        topics_df_netral = pd.DataFrame(topics_list_netral, columns=["Topik", "Kata 1", "Kata 2", "Kata 3", "Kata 4", "Kata 5", "Kata 6", "Kata 7", "Kata 8", "Kata 9", "Kata 10"])
+        st.dataframe(topics_df_netral)
+    
     with tab_pos:
         st.subheader(f"Topik untuk Sentimen Positif ({num_topics_positif} topik):")
+        topics_list_positif = []
         for idx, topic in lda_model_positif.print_topics(num_topics=num_topics_positif):
-            st.write(f"Topik #{idx+1}:")
-            st.write(topic)
+            words = extract_words_from_topic(topic)
+            topics_list_positif.append([f"Topik #{idx+1}"] + words)
+        
+        topics_df_positif = pd.DataFrame(topics_list_positif, columns=["Topik", "Kata 1", "Kata 2", "Kata 3", "Kata 4", "Kata 5", "Kata 6", "Kata 7", "Kata 8", "Kata 9", "Kata 10"])
+        st.dataframe(topics_df_positif)
   
 def main():
     if "logged_in" not in st.session_state:
