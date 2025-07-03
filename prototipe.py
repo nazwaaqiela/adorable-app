@@ -51,62 +51,60 @@ def upload_data():
 
     uploaded_file = st.file_uploader("Unggah file Excel", type="xlsx")
 
-    if uploaded_file:
+     if uploaded_file is not None:
         try:
+            # Membaca data dari file Excel yang diunggah
             df = pd.read_excel(uploaded_file)
+
+            # Menyimpan dataframe ke session_state jika perlu digunakan di fungsi lain
+            st.session_state.df = df
+
+            # Informasi dataset
+            st.subheader("Informasi Dataset")
+            st.write(f"Jumlah baris: {df.shape[0]}")
+            st.write(f"Jumlah kolom: {df.shape[1]}")
+
+            # Cek missing values
+            missing = df.isnull().sum()
+            missing_cols = missing[missing > 0]
+            if not missing_cols.empty:
+                st.write("Missing values per kolom:")
+                st.dataframe(missing_cols)
+
+                # Menghapus missing values
+                if st.button("Hapus Missing Values"):
+                    df = df.dropna()
+                    st.success("Missing values berhasil dihapus!")
+            else:
+                st.write("Tidak ada missing values.")
+            
+            # Cek duplikat data
+            dup_count = df.duplicated().sum()
+            if dup_count > 0:
+                st.write(f"Jumlah baris duplikat: {dup_count}")
+                if st.checkbox("Tampilkan baris duplikat"):
+                    st.dataframe(df[df.duplicated()])
+                
+                # Menghapus duplikat
+                if st.button("Hapus Duplikat"):
+                    df = df.drop_duplicates()
+                    st.success("Duplikat berhasil dihapus!")
+            else:
+                st.write("Tidak ada baris duplikat.")
+            
+            # Tipe data
+            st.write("Tipe Data per Kolom:")
+            st.dataframe(df.dtypes.astype(str))
+
+            # Tampilkan Dataset
+            st.write("10 Data Teratas")
+            st.dataframe(df.head(10))
+
         except Exception as e:
             st.error(f"Gagal membaca file Excel: {e}")
-            return
 
-        if df.empty or df.columns.size == 0:
-            st.error("File kosong atau tidak memiliki kolom.")
-            return
-
-        # Simpan ke session_state
-        st.session_state.df = df
-
-        st.success("Data berhasil diunggah!")
-
-    # Informasi dataset
-    st.subheader("Informasi Dataset")
-    st.write(f"Jumlah baris: {df.shape[0]}")
-    st.write(f"Jumlah kolom: {df.shape[1]}")
-
-    # Cek missing values
-    missing = df.isnull().sum()
-    missing_cols = missing[missing > 0]
-    if not missing_cols.empty:
-        st.write("Missing values per kolom:")
-        st.dataframe(missing_cols)
-        
-        # Menghapus missing values
-        if st.button("Hapus Missing Values"):
-            df = df.dropna()
-            st.success("Missing values berhasil dihapus!")
     else:
-        st.write("Tidak ada missing values.")
-    
-    # Cek duplikat data
-    dup_count = df.duplicated().sum()
-    if dup_count > 0:
-        st.write(f"Jumlah baris duplikat: {dup_count}")
-        if st.checkbox("Tampilkan baris duplikat"):
-            st.dataframe(df[df.duplicated()])
-        
-        # Menghapus duplikat
-        if st.button("Hapus Duplikat"):
-            df = df.drop_duplicates()
-            st.success("Duplikat berhasil dihapus!")
-    else:
-        st.write("Tidak ada baris duplikat.")
-    
-    # Tipe data
-    st.write("Tipe Data per Kolom:")
-    st.dataframe(df.dtypes.astype(str))
-
-    #  Tampilkan Dataset
-    st.write("10 Data Teratas")
-    st.dataframe(df.head(10))
+        st.write("Silakan unggah file terlebih dahulu.")
 
     kamus_slang_path = "kamus_slang.xlsx"
     stopwords_path = "stopwords.xlsx"
