@@ -7,6 +7,13 @@ from wordcloud import WordCloud
 from nltk import ngrams
 import pickle
 import io
+import ast
+import gensim
+from gensim import corpora
+from gensim.models import Phrases, CoherenceModel
+from gensim.models.phrases import Phraser
+import matplotlib.pyplot as plt
+import numpy as np
 
 USERNAME = "admincs"
 PASSWORD = "adorable123"
