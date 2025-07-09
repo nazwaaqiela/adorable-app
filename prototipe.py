@@ -301,8 +301,6 @@ def analisis_sentimen():
             ax.set_title("Top 15 Produk dengan Ulasan Negatif", fontsize=14, pad=20)
             ax.set_xlabel("Jumlah Ulasan Negatif", fontsize=12) 
             ax.set_ylabel("Nama Produk", fontsize=12) 
-            ax.spines['top'].set_visible(False)
-            ax.spines['right'].set_visible(False)
             plt.tight_layout()
             st.pyplot(fig)
                         
@@ -323,14 +321,14 @@ def analisis_sentimen():
             st.pyplot(fig)
     
             # Visualisasi produk dengan ulasan terbanyak 
-            net_product_counts = net_df["Produk"].value_counts()
-            net_product_counts_sort = net_product_counts.sort_values(ascending=False)
-            fig, ax = plt.subplots(figsize=(10, 6))  
-            net_product_counts_sort.head(15).plot(kind="barh", color="lightcoral", ax=ax)
-            ax.invert_yaxis()
-            ax.set_title("Top 15 Produk dengan Ulasan Netral")
-            ax.set_xlabel("Jumlah Ulasan")
-            ax.set_ylabel("Produk")
+            net_product_counts = net_df["Produk"].value_counts().sort_values(ascending=False).head(15)
+            fig, ax = plt.subplots(figsize=(10, 6))
+            net_product_counts.plot(kind="barh", color="lightcoral", ax=ax)
+            ax.invert_yaxis() 
+            ax.set_title("Top 15 Produk dengan Ulasan Netral", fontsize=14, pad=20)
+            ax.set_xlabel("Jumlah Ulasan Netral", fontsize=12) 
+            ax.set_ylabel("Nama Produk", fontsize=12) 
+            plt.tight_layout()
             st.pyplot(fig)
 
     with tab_pos:
@@ -350,14 +348,14 @@ def analisis_sentimen():
             st.pyplot(fig)
     
             # Visualisasi produk dengan ulasan terbanyak 
-            pos_product_counts = pos_df["Produk"].value_counts()
-            pos_product_counts_sort = pos_product_counts.sort_values(ascending=False)
-            fig, ax = plt.subplots(figsize=(10, 6))  
-            pos_product_counts_sort.head(15).plot(kind="barh", color="lightcoral", ax=ax)
-            ax.invert_yaxis()
-            ax.set_title("Top 15 Produk dengan Ulasan Positif")
-            ax.set_xlabel("Jumlah Ulasan")
-            ax.set_ylabel("Produk")
+            pos_product_counts = pos_df["Produk"].value_counts().sort_values(ascending=False).head(15)
+            fig, ax = plt.subplots(figsize=(10, 6))
+            pos_product_counts.plot(kind="barh", color="lightcoral", ax=ax)
+            ax.invert_yaxis() 
+            ax.set_title("Top 15 Produk dengan Ulasan Positif", fontsize=14, pad=20)
+            ax.set_xlabel("Jumlah Ulasan Positif", fontsize=12) 
+            ax.set_ylabel("Nama Produk", fontsize=12) 
+            plt.tight_layout()
             st.pyplot(fig)
 
     kolom_terpilih = ["No", "Tanggal", "Produk", "Ulasan", "Ulasan_Tokenized", "Sentimen"]
