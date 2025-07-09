@@ -408,7 +408,6 @@ def filter_ulasan():
         "Loafer": r"(?i)loafer$",
         "Flat Shoes": r"(?i)flat shoes?$"
     }
-    df["Kategori"] = "Lainnya"
     for cat, pattern in categories.items():
         df.loc[df["Produk"].str.contains(pattern, regex=True), "Kategori"] = cat
 
