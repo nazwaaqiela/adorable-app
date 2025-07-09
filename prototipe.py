@@ -395,19 +395,19 @@ def filter_ulasan():
 
     df = st.session_state.df.copy()
     
-    # Deteksi kategori produk (regex case-insensitive)
     categories = {
-        "Heels": r"(?i)heels?$",
-        "Sneakers": r"(?i)sneakers?$",
-        "Boots": r"(?i)boots?$",
-        "Platform": r"(?i)platform$",
-        "Sandals": r"(?i)sandals?$",
-        "Mules": r"(?i)mules?$",
-        "Oxford": r"(?i)oxford$",
-        "Wedges": r"(?i)wedges?$",
-        "Loafer": r"(?i)loafer$",
-        "Flat Shoes": r"(?i)flat shoes?$"
+        "Heels": r"(?i)\bheels?\b",        
+        "Sneakers": r"(?i)\bsneakers?\b",   
+        "Boots": r"(?i)\bboots?\b",         
+        "Platform": r"(?i)\bplatform\b",    
+        "Sandals": r"(?i)\bsandals?\b",     
+        "Mules": r"(?i)\bmules?\b",         
+        "Oxford": r"(?i)\boxford\b",        
+        "Wedges": r"(?i)\bwedges?\b",      
+        "Loafer": r"(?i)\bloafer\b",        
+        "Flat Shoes": r"(?i)\bflat shoes?\b" 
     }
+    df["Kategori"]= "Lainnya"
     for cat, pattern in categories.items():
         df.loc[df["Produk"].str.contains(pattern, regex=True), "Kategori"] = cat
 
