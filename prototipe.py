@@ -280,7 +280,6 @@ def analisis_sentimen():
     with tab_neg:
         st.write("Ulasan dengan sentimen **Negatif**")
         neg_df = df[df["Prediksi_Sentimen"] == 0]
-        st.dataframe(neg_df[["Produk", "Ulasan"]])
 
         if not neg_df.empty:
              # WordCloud 
@@ -303,11 +302,12 @@ def analisis_sentimen():
             ax.set_ylabel("Nama Produk", fontsize=12) 
             plt.tight_layout()
             st.pyplot(fig)
+
+        st.dataframe(neg_df[["Produk", "Ulasan"]])
                         
     with tab_net:
         st.write("Ulasan dengan sentimen **Netral**")
         net_df = df[df["Prediksi_Sentimen"] == 1]
-        st.dataframe(net_df[["Produk", "Ulasan"]])
 
         if not net_df.empty:
              # WordCloud 
@@ -330,11 +330,12 @@ def analisis_sentimen():
             ax.set_ylabel("Nama Produk", fontsize=12) 
             plt.tight_layout()
             st.pyplot(fig)
-
+            
+        st.dataframe(net_df[["Produk", "Ulasan"]])
+        
     with tab_pos:
         st.write("Ulasan dengan sentimen **Positif**")
         pos_df = df[df["Prediksi_Sentimen"] == 2]
-        st.dataframe(pos_df[["Produk", "Ulasan"]])
 
         if not pos_df.empty:
             # WordCloud 
@@ -357,6 +358,8 @@ def analisis_sentimen():
             ax.set_ylabel("Nama Produk", fontsize=12) 
             plt.tight_layout()
             st.pyplot(fig)
+
+        st.dataframe(pos_df[["Produk", "Ulasan"]])
 
     kolom_terpilih = ["No", "Tanggal", "Produk", "Ulasan", "Ulasan_Tokenized", "Sentimen"]
     export_df = export_df[kolom_terpilih]
