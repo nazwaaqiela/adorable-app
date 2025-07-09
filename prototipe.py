@@ -387,7 +387,7 @@ def analisis_sentimen():
     st.session_state.df = df
 
 def filter_ulasan():
-    st.header("🔍 Filter Ulasan Berdasarkan Kategori")
+    st.header("Filter Ulasan Berdasarkan Kategori")
     
     if "df" not in st.session_state or "Prediksi_Sentimen" not in st.session_state.df.columns:
         st.warning("⚠ Silakan lakukan analisis sentimen terlebih dahulu.")
