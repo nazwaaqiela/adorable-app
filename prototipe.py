@@ -294,21 +294,18 @@ def analisis_sentimen():
             st.pyplot(fig)
     
             # Visualisasi produk dengan ulasan terbanyak 
-            neg_product_counts = neg_df["Produk"].value_counts()
-            neg_product_counts_sort = neg_df["Produk"].value_counts().sort_values(ascending=False).head(15)
-            
+            neg_product_counts = neg_df["Produk"].value_counts().sort_values(ascending=False).head(15)
             fig, ax = plt.subplots(figsize=(10, 6))
-            neg_product_counts_sort.plot(kind="barh", color="lightcoral", ax=ax)
-            
-            # **Perbaikan utama:**
-            ax.invert_yaxis()  # Membalik urutan agar yang terbesar di atas
-            
-            # Atur label dan judul
-            ax.set_title("Top 15 Produk dengan Ulasan Negatif", pad=20)
-            ax.set_xlabel("Jumlah Ulasan Negatif")  # Label sumbu x (nilai numerik)
-            ax.set_ylabel("Nama Produk")  # Label sumbu y (kategori produk)
+            neg_product_counts.plot(kind="barh", color="lightcoral", ax=ax)
+            ax.invert_yaxis() 
+            ax.set_title("Top 15 Produk dengan Ulasan Negatif", fontsize=14, pad=20)
+            ax.set_xlabel("Jumlah Ulasan Negatif", fontsize=12) 
+            ax.set_ylabel("Nama Produk", fontsize=12) 
+            ax.spines['top'].set_visible(False)
+            ax.spines['right'].set_visible(False)
+            plt.tight_layout()
             st.pyplot(fig)
-            
+                        
     with tab_net:
         st.write("Ulasan dengan sentimen **Netral**")
         net_df = df[df["Prediksi_Sentimen"] == 1]
