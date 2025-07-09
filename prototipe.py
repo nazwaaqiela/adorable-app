@@ -547,8 +547,6 @@ def analisis_topik():
         
         topics_df_negatif = pd.DataFrame(topics_list_negatif, columns=["Topik", "Kata 1", "Kata 2", "Kata 3", "Kata 4", "Kata 5", "Kata 6", "Kata 7", "Kata 8", "Kata 9", "Kata 10"])
         st.dataframe(topics_df_negatif)
-
-        topic_search(df[df["Prediksi_Sentimen"] == 0], "negatif")
     
     with tab_net:
         topics_list_netral = []
@@ -558,8 +556,6 @@ def analisis_topik():
         
         topics_df_netral = pd.DataFrame(topics_list_netral, columns=["Topik", "Kata 1", "Kata 2", "Kata 3", "Kata 4", "Kata 5", "Kata 6", "Kata 7", "Kata 8", "Kata 9", "Kata 10"])
         st.dataframe(topics_df_netral)
-
-        topic_search(df[df["Prediksi_Sentimen"] == 1], "netral")
     
     with tab_pos:
         topics_list_positif = []
@@ -569,8 +565,6 @@ def analisis_topik():
         
         topics_df_positif = pd.DataFrame(topics_list_positif, columns=["Topik", "Kata 1", "Kata 2", "Kata 3", "Kata 4", "Kata 5", "Kata 6", "Kata 7", "Kata 8", "Kata 9", "Kata 10"])
         st.dataframe(topics_df_positif)
-
-        topic_search(df[df["Prediksi_Sentimen"] == 2], "positif")
 
     output = io.BytesIO()
     with pd.ExcelWriter(output, engine="xlsxwriter") as writer:
@@ -586,47 +580,6 @@ def analisis_topik():
         file_name="hasil_topik.xlsx",
         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
-
-def topic_search(df, sentiment):
-    st.markdown("Cari Ulasan Berdasarkan Kata Kunci")
-    
-    keyword = st.text_input(
-        f"Masukkan kata kunci (contoh: 'lecet', 'rusak', 'nyaman')",
-        key=f"search_{sentiment}"
-    )
-    
-    if st.button(f"Cari Ulasan {sentiment.capitalize()}", key=f"btn_{sentiment}"):
-        if not keyword:
-            st.warning("Harap masukkan kata kunci")
-            return
-            
-        results = df[
-            df["Ulasan_String"].str.contains(keyword, case=False, regex=False, na=False)
-        ]
-        
-        if not results.empty:
-            st.success(f"Ditemukan {len(results)} ulasan dengan kata '{keyword}'")
-            
-            col1, col2 = st.columns([1, 3])
-            
-            with col1:
-                st.markdown("**Distribusi Produk**")
-                st.bar_chart(results["Produk"].value_counts().head(10))
-            
-            with col2:
-                st.markdown("**Daftar Ulasan**")
-                st.dataframe(
-                    results[["Produk", "Ulasan"]],
-                    height=400,
-                    column_config={
-                        "Produk": "Nama Produk",
-                        "Ulasan": "Isi Ulasan"
-                    },
-                    hide_index=True,
-                    use_container_width=True
-                )
-        else:
-            st.warning(f"Tidak ditemukan ulasan {sentiment} dengan kata '{keyword}'")
 
 def main():
     if "logged_in" not in st.session_state:
