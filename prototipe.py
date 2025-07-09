@@ -295,13 +295,18 @@ def analisis_sentimen():
     
             # Visualisasi produk dengan ulasan terbanyak 
             neg_product_counts = neg_df["Produk"].value_counts()
-            neg_product_counts_sort = neg_product_counts.sort_values(ascending=False)
-            fig, ax = plt.subplots(figsize=(10, 6))  
-            neg_product_counts_sort.head(15).plot(kind="barh", color="lightcoral", ax=ax)
-            ax.invert_yaxis()
-            ax.set_title("Top 15 Produk dengan Ulasan Negatif")
-            ax.set_xlabel("Jumlah Ulasan")
-            ax.set_ylabel("Produk")
+            neg_product_counts_sort = neg_df["Produk"].value_counts().sort_values(ascending=False).head(15)
+            
+            fig, ax = plt.subplots(figsize=(10, 6))
+            neg_product_counts_sort.plot(kind="barh", color="lightcoral", ax=ax)
+            
+            # **Perbaikan utama:**
+            ax.invert_yaxis()  # Membalik urutan agar yang terbesar di atas
+            
+            # Atur label dan judul
+            ax.set_title("Top 15 Produk dengan Ulasan Negatif", pad=20)
+            ax.set_xlabel("Jumlah Ulasan Negatif")  # Label sumbu x (nilai numerik)
+            ax.set_ylabel("Nama Produk")  # Label sumbu y (kategori produk)
             st.pyplot(fig)
             
     with tab_net:
