@@ -175,30 +175,40 @@ def exploratory_data_analysis():
 
     df = st.session_state.df.copy()
 
+    # Jumlah ulasan per produk
+    st.subheader("Jumlah Ulasan per Produk")
+    product_counts = df["Produk"].value_counts()  # Menghitung jumlah ulasan per produk
+    fig, ax = plt.subplots(figsize=(15, 6))  # Menyesuaikan ukuran agar sama
+    product_counts.head(15).plot(kind="bar", color="lightgreen", ax=ax)
+    ax.set_title("Top 15 Produk dengan Ulasan Terbanyak")
+    ax.set_xlabel("Produk")
+    ax.set_ylabel("Jumlah Ulasan")
+    ax.tick_params(axis='x', rotation=45)
+    st.pyplot(fig)
+
     df["Ulasan_String"] = df["Ulasan_Tokenized"].apply(lambda tokens: ' '.join(tokens))
 
     # Explode kata
     words_exploded = df["Ulasan_String"].str.split().explode()
     word_counts = words_exploded.value_counts()
 
-    # Plot histogram
+    # Kata paling banyak muncul
     st.subheader("Kata yang paling banyak muncul")
     fig, ax = plt.subplots(figsize=(10, 6))
     word_counts.head(20).plot(kind="bar", color="skyblue", ax=ax)
-    ax.set_title("Top 20 Most Frequent Words")
-    ax.set_xlabel("Words")
-    ax.set_ylabel("Frequency")
+    ax.set_title("Top 15 Kata yang Paling Banyak Muncul")
+    ax.set_xlabel("Kata")
+    ax.set_ylabel("Frekuensi")
     ax.tick_params(axis='x', rotation=45)
     st.pyplot(fig)
 
-    # Gabungkan semua token jadi satu string
+    # semua token jadi satu string
     all_tokens = sum(df["Ulasan_Tokenized"], [])
     text = ' '.join(all_tokens)
 
-    # Buat WordCloud
+    # WordCloud
     wc = WordCloud(width=800, height=400, background_color='white').generate(text)
 
-    # Tampilkan di Streamlit
     st.subheader("WordCloud")
     fig, ax = plt.subplots(figsize=(15, 7))
     ax.imshow(wc, interpolation='bilinear')
@@ -270,7 +280,7 @@ def analisis_sentimen():
     with tab_neg:
         st.write("Ulasan dengan sentimen **Negatif**")
         neg_df = df[df["Prediksi_Sentimen"] == 0]
-        st.dataframe(neg_df[["Ulasan"]])
+        st.dataframe(neg_df[["Produk", "Ulasan"]])
 
         if not neg_df.empty:
             all_tokens = sum(neg_df["Ulasan_Tokenized"], [])
@@ -285,7 +295,7 @@ def analisis_sentimen():
     with tab_net:
         st.write("Ulasan dengan sentimen **Netral**")
         net_df = df[df["Prediksi_Sentimen"] == 1]
-        st.dataframe(net_df[["Ulasan"]])
+        st.dataframe(net_df[["Produk", "Ulasan"]])
 
         if not net_df.empty:
             all_tokens = sum(net_df["Ulasan_Tokenized"], [])
@@ -300,7 +310,7 @@ def analisis_sentimen():
     with tab_pos:
         st.write("Ulasan dengan sentimen **Positif**")
         pos_df = df[df["Prediksi_Sentimen"] == 2]
-        st.dataframe(pos_df[["Ulasan"]])
+        st.dataframe(pos_df[["Produk", "Ulasan"]])
 
         if not pos_df.empty:
             all_tokens = sum(pos_df["Ulasan_Tokenized"], [])
