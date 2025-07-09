@@ -299,11 +299,10 @@ def analisis_sentimen():
             fig, ax = plt.subplots(figsize=(10, 6))  
             neg_product_counts_sort.head(15).plot(kind="barh", color="lightcoral", ax=ax)
             ax.set_title("Top 15 Produk dengan Ulasan Negatif")
-            ax.set_xlabel("Produk")
-            ax.set_ylabel("Jumlah Ulasan")
-            ax.tick_params(axis='x', rotation=45)
+            ax.set_xlabel("Jumlah Ulasan")
+            ax.set_ylabel("Produk")
             st.pyplot(fig)
-
+            
     with tab_net:
         st.write("Ulasan dengan sentimen **Netral**")
         net_df = df[df["Prediksi_Sentimen"] == 1]
@@ -326,9 +325,8 @@ def analisis_sentimen():
             fig, ax = plt.subplots(figsize=(10, 6))  
             net_product_counts_sort.head(15).plot(kind="barh", color="lightcoral", ax=ax)
             ax.set_title("Top 15 Produk dengan Ulasan Netral")
-            ax.set_xlabel("Produk")
-            ax.set_ylabel("Jumlah Ulasan")
-            ax.tick_params(axis='x', rotation=45)
+            ax.set_xlabel("Jumlah Ulasan")
+            ax.set_ylabel("Produk")
             st.pyplot(fig)
 
     with tab_pos:
@@ -353,9 +351,8 @@ def analisis_sentimen():
             fig, ax = plt.subplots(figsize=(10, 6))  
             pos_product_counts_sort.head(15).plot(kind="barh", color="lightcoral", ax=ax)
             ax.set_title("Top 15 Produk dengan Ulasan Positif")
-            ax.set_xlabel("Produk")
-            ax.set_ylabel("Jumlah Ulasan")
-            ax.tick_params(axis='x', rotation=45)
+            ax.set_xlabel("Jumlah Ulasan")
+            ax.set_ylabel("Produk")
             st.pyplot(fig)
 
     kolom_terpilih = ["No", "Tanggal", "Produk", "Ulasan", "Ulasan_Tokenized", "Sentimen"]
