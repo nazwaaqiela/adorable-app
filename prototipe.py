@@ -389,9 +389,15 @@ def analisis_sentimen():
 
 def filter_ulasan():
     st.header("Filter Ulasan")
-
+    
+    if "df" not in st.session_state:
+            st.warning("⚠ Data tidak tersedia. Pastikan Anda telah mengupload dan membersihkan data.")
+            return
+    
     tab_neg, tab_net, tab_pos = st.tabs(["**Negatif**", "**Netral**", "**Positif**"])
 
+    df = st.session_state.df
+    
     with tab_neg:
         st.write("Ulasan dengan sentimen **Negatif**")
         neg_df = df[df["Prediksi_Sentimen"] == 0]
