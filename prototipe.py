@@ -39,7 +39,8 @@ def home():
     1. **Unggah dataset** dengan memilih opsi 'Unggah Data' di menu.
     2. Pilih '**Analisis Data Eksploratori**' untuk melihat gambaran umum dari data melalui grafik dan statistik deskriptif.
     3. Pilih '**Analisis Sentimen**' untuk menganalisis teks dalam dataset dan melihat sentimen yang terkandung di dalamnya.
-    4. Pilih '**Analisis Topik**' untuk mengidentifikasi topik-topik utama yang terkandung dalam dataset.
+    4. Pilih '**Filter Ulasan**' untuk melakukan filter pada ulasan setiap sentimen berdasarkan nama produk dan kategori produk.
+    5. Pilih '**Analisis Topik**' untuk mengidentifikasi topik-topik utama yang terkandung dalam dataset.
     
     Setelah analisis selesai, hasil analisis dalam bentuk file excel dapat diunduh.
 
