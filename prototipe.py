@@ -610,7 +610,7 @@ def main():
         st.sidebar.title("Navigasi")
         page = st.sidebar.radio("Pilih Halaman", [
             "Halaman Utama", "Unggah Data", "Analisis Data Eksploratori",
-            "Analisis Sentimen", "Analisis Topik", "Keluar"
+            "Analisis Sentimen", "Filter Ulasan", "Analisis Topik", "Keluar"
         ])
 
         if page == "Halaman Utama":
@@ -621,6 +621,8 @@ def main():
             exploratory_data_analysis()
         elif page == "Analisis Sentimen":
             analisis_sentimen()
+        elif page == "Filter Ulasan":
+            filter_ulasan()
         elif page == "Analisis Topik":
             analisis_topik()
         elif page == "Keluar":
