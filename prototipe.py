@@ -270,7 +270,7 @@ def analisis_sentimen():
     with tab_neg:
         st.write("Ulasan dengan sentimen **Negatif**")
         neg_df = df[df["Prediksi_Sentimen"] == 0]
-        st.dataframe(neg_df[["Produk"],["Ulasan"]])
+        st.dataframe(neg_df[["Ulasan"]])
 
         if not neg_df.empty:
             all_tokens = sum(neg_df["Ulasan_Tokenized"], [])
