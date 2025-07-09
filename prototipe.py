@@ -295,6 +295,7 @@ def analisis_sentimen():
     
             # Visualisasi produk dengan ulasan terbanyak 
             neg_product_counts = neg_df["Produk"].value_counts()
+            neg_product_counts = neg_product_counts.sort_values(ascending=False)
             fig, ax = plt.subplots(figsize=(15, 6))  
             neg_product_counts.head(15).plot(kind="barh", color="lightcoral", ax=ax)
             ax.set_title("Top 15 Produk dengan Ulasan Negatif")
@@ -321,6 +322,7 @@ def analisis_sentimen():
     
             # Visualisasi produk dengan ulasan terbanyak 
             net_product_counts = net_df["Produk"].value_counts()
+            net_product_counts = net_product_counts.sort_values(ascending=False)
             fig, ax = plt.subplots(figsize=(15, 6))  
             net_product_counts.head(15).plot(kind="barh", color="lightcoral", ax=ax)
             ax.set_title("Top 15 Produk dengan Ulasan Netral")
@@ -347,6 +349,7 @@ def analisis_sentimen():
     
             # Visualisasi produk dengan ulasan terbanyak 
             pos_product_counts = pos_df["Produk"].value_counts()
+            pos_product_counts = pos_product_counts.sort_values(ascending=False)
             fig, ax = plt.subplots(figsize=(15, 6))  
             pos_product_counts.head(15).plot(kind="barh", color="lightcoral", ax=ax)
             ax.set_title("Top 15 Produk dengan Ulasan Positif")
