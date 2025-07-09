@@ -294,7 +294,7 @@ def analisis_sentimen():
             st.pyplot(fig)
     
             # Visualisasi produk dengan ulasan terbanyak 
-            neg_product_counts = pos_df["Produk"].value_counts()
+            neg_product_counts = neg_df["Produk"].value_counts()
             fig, ax = plt.subplots(figsize=(15, 6))  
             neg_product_counts.head(15).plot(kind="bar", color="lightcoral", ax=ax)
             ax.set_title("Top 15 Produk dengan Ulasan Negatif")
