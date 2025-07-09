@@ -387,17 +387,27 @@ def analisis_sentimen():
     # Simpan kembali ke session_state
     st.session_state.df = df
 
+def get_kategori_from_produk(nama_produk):
+    kategori_list = ["Heels", "Sneakers", "Boots", "Platform", "Sandals", "Mules", "Oxford", "Wedges", "Loafer", "Flat Shoes"]
+    for kategori in kategori_list:
+        if nama_produk.endswith(kategori):
+            return kategori
+    return "Kategori Tidak Dikenal"
+
 def filter_ulasan():
-    st.header("Filter Ulasan")
-    
+    st.header("Filter Ulasan Berdasarkan Produk dan Kategori")
+
+    # Pastikan DataFrame 'df' tersedia di session_state
     if "df" not in st.session_state:
-            st.warning("⚠ Data tidak tersedia. Pastikan Anda telah mengupload dan membersihkan data.")
-            return
-    
+        st.warning("⚠ Data tidak tersedia. Pastikan Anda telah mengupload dan membersihkan data.")
+        return
+
+    # Ambil DataFrame dari session state
+    df = st.session_state.df
+
+    # Tab navigasi
     tab_neg, tab_net, tab_pos = st.tabs(["**Negatif**", "**Netral**", "**Positif**"])
 
-    df = st.session_state.df
-    
     with tab_neg:
         st.write("Ulasan dengan sentimen **Negatif**")
         neg_df = df[df["Prediksi_Sentimen"] == 0]
@@ -409,17 +419,11 @@ def filter_ulasan():
             key="neg_product_filter"
         )
         
-        # Dropdown untuk memilih kategori produk
-        kategori_neg = st.selectbox(
-            "Pilih Kategori Produk:",
-            options=["Semua Kategori", "Heels", "Sneakers", "Boots", "Platform", "Sandals", "Mules", "Oxford", "Wedges", "Loafer", "Flat Shoes"],
-            key="neg_kategori_filter"
-        )
+        # Tentukan kategori berdasarkan nama produk yang dipilih
+        kategori_neg = get_kategori_from_produk(selected_product_neg)
         
-        # Filter berdasarkan kategori produk langsung di dalam filter_ulasan
-        if kategori_neg != "Semua Kategori":
-            neg_df = neg_df[neg_df["Produk"].str.endswith(kategori_neg)]
-
+        st.write(f"Kategori produk yang dipilih: {kategori_neg}")
+        
         # Filter berdasarkan produk yang dipilih
         filtered_neg_df = neg_df[neg_df["Produk"] == selected_product_neg]
         st.dataframe(filtered_neg_df[["Produk", "Ulasan"]])
@@ -435,17 +439,11 @@ def filter_ulasan():
             key="net_product_filter"
         )
         
-        # Dropdown untuk memilih kategori produk
-        kategori_net = st.selectbox(
-            "Pilih Kategori Produk:",
-            options=["Semua Kategori", "Heels", "Sneakers", "Boots", "Platform", "Sandals", "Mules", "Oxford", "Wedges", "Loafer", "Flat Shoes"],
-            key="net_kategori_filter"
-        )
+        # Tentukan kategori berdasarkan nama produk yang dipilih
+        kategori_net = get_kategori_from_produk(selected_product_net)
         
-        # Filter berdasarkan kategori produk langsung di dalam filter_ulasan
-        if kategori_net != "Semua Kategori":
-            net_df = net_df[net_df["Produk"].str.endswith(kategori_net)]
-
+        st.write(f"Kategori produk yang dipilih: {kategori_net}")
+        
         # Filter berdasarkan produk yang dipilih
         filtered_net_df = net_df[net_df["Produk"] == selected_product_net]
         st.dataframe(filtered_net_df[["Produk", "Ulasan"]])
@@ -461,20 +459,15 @@ def filter_ulasan():
             key="pos_product_filter"
         )
         
-        # Dropdown untuk memilih kategori produk
-        kategori_pos = st.selectbox(
-            "Pilih Kategori Produk:",
-            options=["Semua Kategori", "Heels", "Sneakers", "Boots", "Platform", "Sandals", "Mules", "Oxford", "Wedges", "Loafer", "Flat Shoes"],
-            key="pos_kategori_filter"
-        )
+        # Tentukan kategori berdasarkan nama produk yang dipilih
+        kategori_pos = get_kategori_from_produk(selected_product_pos)
         
-        # Filter berdasarkan kategori produk langsung di dalam filter_ulasan
-        if kategori_pos != "Semua Kategori":
-            pos_df = pos_df[pos_df["Produk"].str.endswith(kategori_pos)]
-
+        st.write(f"Kategori produk yang dipilih: {kategori_pos}")
+        
         # Filter berdasarkan produk yang dipilih
         filtered_pos_df = pos_df[pos_df["Produk"] == selected_product_pos]
         st.dataframe(filtered_pos_df[["Produk", "Ulasan"]])
+
 
 def analisis_topik():
     st.header("Analisis Topik Ulasan")
