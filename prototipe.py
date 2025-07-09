@@ -283,6 +283,7 @@ def analisis_sentimen():
         st.dataframe(neg_df[["Produk", "Ulasan"]])
 
         if not neg_df.empty:
+             # WordCloud 
             all_tokens = sum(neg_df["Ulasan_Tokenized"], [])
             text = ' '.join(all_tokens)
             wc = WordCloud(width=800, height=400, background_color='white').generate(text)
@@ -291,6 +292,16 @@ def analisis_sentimen():
             ax.axis('off')
             ax.set_title("WordCloud Sentimen Negatif", fontsize=18)
             st.pyplot(fig)
+    
+            # Visualisasi produk dengan ulasan terbanyak 
+            neg_product_counts = pos_df["Produk"].value_counts()
+            fig, ax = plt.subplots(figsize=(15, 6))  
+            neg_product_counts.head(15).plot(kind="bar", color="lightcoral", ax=ax)
+            ax.set_title("Top 15 Produk dengan Ulasan Negatif")
+            ax.set_xlabel("Produk")
+            ax.set_ylabel("Jumlah Ulasan")
+            ax.tick_params(axis='x', rotation=45)
+            st.pyplot(fig)
 
     with tab_net:
         st.write("Ulasan dengan sentimen **Netral**")
@@ -298,6 +309,7 @@ def analisis_sentimen():
         st.dataframe(net_df[["Produk", "Ulasan"]])
 
         if not net_df.empty:
+             # WordCloud 
             all_tokens = sum(net_df["Ulasan_Tokenized"], [])
             text = ' '.join(all_tokens)
             wc = WordCloud(width=800, height=400, background_color='white').generate(text)
@@ -306,6 +318,16 @@ def analisis_sentimen():
             ax.axis('off')
             ax.set_title("WordCloud Sentimen Netral", fontsize=18)
             st.pyplot(fig)
+    
+            # Visualisasi produk dengan ulasan terbanyak 
+            net_product_counts = net_df["Produk"].value_counts()
+            fig, ax = plt.subplots(figsize=(15, 6))  
+            net_product_counts.head(15).plot(kind="bar", color="lightcoral", ax=ax)
+            ax.set_title("Top 15 Produk dengan Ulasan Negatif")
+            ax.set_xlabel("Produk")
+            ax.set_ylabel("Jumlah Ulasan")
+            ax.tick_params(axis='x', rotation=45)
+            st.pyplot(fig)
 
     with tab_pos:
         st.write("Ulasan dengan sentimen **Positif**")
@@ -313,6 +335,7 @@ def analisis_sentimen():
         st.dataframe(pos_df[["Produk", "Ulasan"]])
 
         if not pos_df.empty:
+            # WordCloud 
             all_tokens = sum(pos_df["Ulasan_Tokenized"], [])
             text = ' '.join(all_tokens)
             wc = WordCloud(width=800, height=400, background_color='white').generate(text)
@@ -320,6 +343,16 @@ def analisis_sentimen():
             ax.imshow(wc, interpolation='bilinear')
             ax.axis('off')
             ax.set_title("WordCloud Sentimen Positif", fontsize=18)
+            st.pyplot(fig)
+    
+            # Visualisasi produk dengan ulasan terbanyak 
+            pos_product_counts = pos_df["Produk"].value_counts()
+            fig, ax = plt.subplots(figsize=(15, 6))  
+            pos_product_counts.head(15).plot(kind="bar", color="lightcoral", ax=ax)
+            ax.set_title("Top 15 Produk dengan Ulasan Positif")
+            ax.set_xlabel("Produk")
+            ax.set_ylabel("Jumlah Ulasan")
+            ax.tick_params(axis='x', rotation=45)
             st.pyplot(fig)
 
     kolom_terpilih = ["No", "Tanggal", "Produk", "Ulasan", "Ulasan_Tokenized", "Sentimen"]
