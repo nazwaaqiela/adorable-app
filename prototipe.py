@@ -387,88 +387,84 @@ def analisis_sentimen():
     st.session_state.df = df
 
 def filter_ulasan():
-    st.header("Filter Ulasan Berdasarkan Kategori")
+    st.header("🔍 Filter Ulasan")
     
     if "df" not in st.session_state or "Prediksi_Sentimen" not in st.session_state.df.columns:
-        st.warning("⚠ Silakan lakukan analisis sentimen terlebih dahulu.")
+        st.warning("⚠ Silakan lakukan analisis sentimen terlebih dahulu")
         return
-    
+
     df = st.session_state.df.copy()
     
-    # Definisikan kategori produk
+    # Deteksi kategori produk (regex case-insensitive)
     categories = {
-        "Heels": "Heels",
-        "Sneakers": "Sneakers",
-        "Boots": "Boots",
-        "Platform": "Platform",
-        "Sandals": "Sandals",
-        "Mules": "Mules",
-        "Oxford": "Oxford",
-        "Wedges": "Wedges",
-        "Loafer": "Loafer",
-        "Flat Shoes": "Flat Shoes"
+        "Heels": r"(?i)heels?$",
+        "Sneakers": r"(?i)sneakers?$",
+        "Boots": r"(?i)boots?$",
+        "Platform": r"(?i)platform$",
+        "Sandals": r"(?i)sandals?$",
+        "Mules": r"(?i)mules?$",
+        "Oxford": r"(?i)oxford$",
+        "Wedges": r"(?i)wedges?$",
+        "Loafer": r"(?i)loafer$",
+        "Flat Shoes": r"(?i)flat shoes?$"
     }
-    
-    # Tambahkan kolom kategori berdasarkan nama produk
     df["Kategori"] = "Lainnya"
-    for cat, keyword in categories.items():
-        df.loc[df["Produk"].str.endswith(keyword), "Kategori"] = cat
-    
-    tab_neg, tab_net, tab_pos = st.tabs(["**Negatif**", "**Netral**", "**Positif**"])
+    for cat, pattern in categories.items():
+        df.loc[df["Produk"].str.contains(pattern, regex=True), "Kategori"] = cat
+
+    # Tab sentimen
+    tab_neg, tab_net, tab_pos = st.tabs(["🗯️ Negatif", "➖ Netral", "❤️ Positif"])
     
     with tab_neg:
-        st.subheader("Filter Ulasan Negatif")
-        neg_df = df[df["Prediksi_Sentimen"] == 0]
-        _create_filter_interface(neg_df, categories)
-    
+        _build_sentiment_tab(df[df["Prediksi_Sentimen"] == 0], "Negatif")
     with tab_net:
-        st.subheader("Filter Ulasan Netral")
-        net_df = df[df["Prediksi_Sentimen"] == 1]
-        _create_filter_interface(net_df, categories)
-    
+        _build_sentiment_tab(df[df["Prediksi_Sentimen"] == 1], "Netral")
     with tab_pos:
-        st.subheader("Filter Ulasan Positif")
-        pos_df = df[df["Prediksi_Sentimen"] == 2]
-        _create_filter_interface(pos_df, categories)
+        _build_sentiment_tab(df[df["Prediksi_Sentimen"] == 2], "Positif")
 
-def _create_filter_interface(df, categories):
+def _build_sentiment_tab(df, label):
+    st.subheader(f"Ulasan {label}")
+    
     if df.empty:
-        st.warning("Tidak ada data untuk sentimen ini")
+        st.warning(f"Tidak ada ulasan {label.lower()}")
         return
+
+    # Tab filter produk vs kategori
+    tab_produk, tab_kategori = st.tabs(["🔧 Filter by Produk", "🏷️ Filter by Kategori"])
     
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        # Filter berdasarkan kategori
-        selected_categories = st.multiselect(
-            "Pilih Kategori Produk:",
-            options=list(categories.keys()),
-            default=list(categories.keys()),
-            key=f"cat_filter_{str(id(df))}"
-        )
-        
-    with col2:
-        # Filter berdasarkan produk
-        available_products = df[df["Kategori"].isin(selected_categories)]["Produk"].unique()
+    with tab_produk:
+        # Filter produk
         selected_products = st.multiselect(
             "Pilih Produk:",
-            options=available_products,
-            default=available_products[0] if len(available_products) > 0 else None,
-            key=f"prod_filter_{str(id(df))}"
+            options=df["Produk"].unique(),
+            default=df["Produk"].unique()[0:3],
+            key=f"prod_{label}"
         )
-    
-    # Filter data
-    filtered_df = df[
-        (df["Kategori"].isin(selected_categories)) & 
-        (df["Produk"].isin(selected_products))
-    ]
-    
-    # Tampilkan hasil
-    st.dataframe(
-        filtered_df[["Produk", "Kategori", "Ulasan"]],
-        height=400,
-        use_container_width=True
-    )
+        produk_df = df[df["Produk"].isin(selected_products)]
+        
+        st.dataframe(
+            produk_df[["Produk", "Ulasan"]],
+            height=300,
+            hide_index=True
+        )
+        st.markdown(f"**Total Ulasan:** {len(produk_df)}")
+
+    with tab_kategori:
+        # Filter kategori
+        selected_cats = st.multiselect(
+            "Pilih Kategori:",
+            options=df["Kategori"].unique(),
+            default=df["Kategori"].unique()[0:2],
+            key=f"cat_{label}"
+        )
+        kategori_df = df[df["Kategori"].isin(selected_cats)]
+        
+        st.dataframe(
+            kategori_df[["Kategori", "Produk", "Ulasan"]],
+            height=300,
+            hide_index=True
+        )
+        st.markdown(f"**Total Ulasan:** {len(kategori_df)}")
 
 def analisis_topik():
     st.header("Analisis Topik Ulasan")
