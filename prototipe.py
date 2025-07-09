@@ -387,7 +387,7 @@ def analisis_sentimen():
     st.session_state.df = df
 
 def filter_ulasan():
-    st.header("🔍 Filter Ulasan")
+    st.header("Filter Ulasan")
     
     if "df" not in st.session_state or "Prediksi_Sentimen" not in st.session_state.df.columns:
         st.warning("⚠ Silakan lakukan analisis sentimen terlebih dahulu")
@@ -413,16 +413,16 @@ def filter_ulasan():
         df.loc[df["Produk"].str.contains(pattern, regex=True), "Kategori"] = cat
 
     # Tab sentimen
-    tab_neg, tab_net, tab_pos = st.tabs(["🗯️ Negatif", "➖ Netral", "❤️ Positif"])
+    tab_neg, tab_net, tab_pos = st.tabs(["**Negatif**", "**Netral**", "**Positif**"])
     
     with tab_neg:
-        _build_sentiment_tab(df[df["Prediksi_Sentimen"] == 0], "Negatif")
+        build_sentiment_tab(df[df["Prediksi_Sentimen"] == 0], "Negatif")
     with tab_net:
-        _build_sentiment_tab(df[df["Prediksi_Sentimen"] == 1], "Netral")
+        build_sentiment_tab(df[df["Prediksi_Sentimen"] == 1], "Netral")
     with tab_pos:
-        _build_sentiment_tab(df[df["Prediksi_Sentimen"] == 2], "Positif")
+        build_sentiment_tab(df[df["Prediksi_Sentimen"] == 2], "Positif")
 
-def _build_sentiment_tab(df, label):
+def build_sentiment_tab(df, label):
     st.subheader(f"Ulasan {label}")
     
     if df.empty:
@@ -430,7 +430,7 @@ def _build_sentiment_tab(df, label):
         return
 
     # Tab filter produk vs kategori
-    tab_produk, tab_kategori = st.tabs(["🔧 Filter by Produk", "🏷️ Filter by Kategori"])
+    tab_produk, tab_kategori = st.tabs(["Filter Berdasarkan Produk", "Filter Berdasarkan Kategori"])
     
     with tab_produk:
         # Filter produk
