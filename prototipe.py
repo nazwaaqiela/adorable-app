@@ -281,15 +281,6 @@ def analisis_sentimen():
         st.write("Ulasan dengan sentimen **Negatif**")
         neg_df = df[df["Prediksi_Sentimen"] == 0]
         st.dataframe(neg_df[["Produk", "Ulasan"]])
-        
-        selected_product = st.selectbox(
-            "Pilih Produk:",
-            options=neg_df["Produk"].unique(), 
-            key="neg_product_filter"
-        )
-        
-        filtered_df = neg_df[neg_df["Produk"] == selected_product]
-        st.dataframe(filtered_df[["Produk", "Ulasan"]])
 
         if not neg_df.empty:
              # WordCloud 
