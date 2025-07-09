@@ -376,7 +376,6 @@ def analisis_sentimen():
 
     xlsx_data = output.getvalue()  
 
-    # Unduh di Streamlit
     st.download_button(
         label="📥 Unduh Hasil Sentimen",
         data=xlsx_data,
@@ -387,87 +386,89 @@ def analisis_sentimen():
     # Simpan kembali ke session_state
     st.session_state.df = df
 
-def get_kategori_from_produk(nama_produk):
-    kategori_list = ["Heels", "Sneakers", "Boots", "Platform", "Sandals", "Mules", "Oxford", "Wedges", "Loafer", "Flat Shoes"]
-    for kategori in kategori_list:
-        if nama_produk.endswith(kategori):
-            return kategori
-    return "Kategori Tidak Dikenal"
-
 def filter_ulasan():
-    st.header("Filter Ulasan Berdasarkan Produk dan Kategori")
-
-    # Pastikan DataFrame 'df' tersedia di session_state
-    if "df" not in st.session_state:
-        st.warning("⚠ Data tidak tersedia. Pastikan Anda telah mengupload dan membersihkan data.")
+    st.header("🔍 Filter Ulasan Berdasarkan Kategori")
+    
+    if "df" not in st.session_state or "Prediksi_Sentimen" not in st.session_state.df.columns:
+        st.warning("⚠ Silakan lakukan analisis sentimen terlebih dahulu.")
         return
-
-    # Ambil DataFrame dari session state
-    df = st.session_state.df
-
-    # Tab navigasi
+    
+    df = st.session_state.df.copy()
+    
+    # Definisikan kategori produk
+    categories = {
+        "Heels": "Heels",
+        "Sneakers": "Sneakers",
+        "Boots": "Boots",
+        "Platform": "Platform",
+        "Sandals": "Sandals",
+        "Mules": "Mules",
+        "Oxford": "Oxford",
+        "Wedges": "Wedges",
+        "Loafer": "Loafer",
+        "Flat Shoes": "Flat Shoes"
+    }
+    
+    # Tambahkan kolom kategori berdasarkan nama produk
+    df["Kategori"] = "Lainnya"
+    for cat, keyword in categories.items():
+        df.loc[df["Produk"].str.endswith(keyword), "Kategori"] = cat
+    
     tab_neg, tab_net, tab_pos = st.tabs(["**Negatif**", "**Netral**", "**Positif**"])
-
+    
     with tab_neg:
-        st.write("Ulasan dengan sentimen **Negatif**")
+        st.subheader("Filter Ulasan Negatif")
         neg_df = df[df["Prediksi_Sentimen"] == 0]
-        
-        # Dropdown untuk memilih produk
-        selected_product_neg = st.selectbox(
-            "Pilih Produk dengan Sentimen Negatif:",
-            options=neg_df["Produk"].unique(), 
-            key="neg_product_filter"
-        )
-        
-        # Tentukan kategori berdasarkan nama produk yang dipilih
-        kategori_neg = get_kategori_from_produk(selected_product_neg)
-        
-        st.write(f"Kategori produk yang dipilih: {kategori_neg}")
-        
-        # Filter berdasarkan produk yang dipilih
-        filtered_neg_df = neg_df[neg_df["Produk"] == selected_product_neg]
-        st.dataframe(filtered_neg_df[["Produk", "Ulasan"]])
-
+        _create_filter_interface(neg_df, categories)
+    
     with tab_net:
-        st.write("Ulasan dengan sentimen **Netral**")
+        st.subheader("Filter Ulasan Netral")
         net_df = df[df["Prediksi_Sentimen"] == 1]
-        
-        # Dropdown untuk memilih produk
-        selected_product_net = st.selectbox(
-            "Pilih Produk dengan Sentimen Netral:",
-            options=net_df["Produk"].unique(), 
-            key="net_product_filter"
-        )
-        
-        # Tentukan kategori berdasarkan nama produk yang dipilih
-        kategori_net = get_kategori_from_produk(selected_product_net)
-        
-        st.write(f"Kategori produk yang dipilih: {kategori_net}")
-        
-        # Filter berdasarkan produk yang dipilih
-        filtered_net_df = net_df[net_df["Produk"] == selected_product_net]
-        st.dataframe(filtered_net_df[["Produk", "Ulasan"]])
-
+        _create_filter_interface(net_df, categories)
+    
     with tab_pos:
-        st.write("Ulasan dengan sentimen **Positif**")
+        st.subheader("Filter Ulasan Positif")
         pos_df = df[df["Prediksi_Sentimen"] == 2]
-        
-        # Dropdown untuk memilih produk
-        selected_product_pos = st.selectbox(
-            "Pilih Produk dengan Sentimen Positif:",
-            options=pos_df["Produk"].unique(), 
-            key="pos_product_filter"
+        _create_filter_interface(pos_df, categories)
+
+def _create_filter_interface(df, categories):
+    if df.empty:
+        st.warning("Tidak ada data untuk sentimen ini")
+        return
+    
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        # Filter berdasarkan kategori
+        selected_categories = st.multiselect(
+            "Pilih Kategori Produk:",
+            options=list(categories.keys()),
+            default=list(categories.keys()),
+            key=f"cat_filter_{str(id(df))}"
         )
         
-        # Tentukan kategori berdasarkan nama produk yang dipilih
-        kategori_pos = get_kategori_from_produk(selected_product_pos)
-        
-        st.write(f"Kategori produk yang dipilih: {kategori_pos}")
-        
-        # Filter berdasarkan produk yang dipilih
-        filtered_pos_df = pos_df[pos_df["Produk"] == selected_product_pos]
-        st.dataframe(filtered_pos_df[["Produk", "Ulasan"]])
-
+    with col2:
+        # Filter berdasarkan produk
+        available_products = df[df["Kategori"].isin(selected_categories)]["Produk"].unique()
+        selected_products = st.multiselect(
+            "Pilih Produk:",
+            options=available_products,
+            default=available_products[0] if len(available_products) > 0 else None,
+            key=f"prod_filter_{str(id(df))}"
+        )
+    
+    # Filter data
+    filtered_df = df[
+        (df["Kategori"].isin(selected_categories)) & 
+        (df["Produk"].isin(selected_products))
+    ]
+    
+    # Tampilkan hasil
+    st.dataframe(
+        filtered_df[["Produk", "Kategori", "Ulasan"]],
+        height=400,
+        use_container_width=True
+    )
 
 def analisis_topik():
     st.header("Analisis Topik Ulasan")
